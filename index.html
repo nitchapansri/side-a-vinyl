@@ -55,6 +55,8 @@
     .media-switch { display: inline-flex; gap: 3px; border: 1px solid var(--line); padding: 3px; margin: 0 0 18px; background: var(--white); }
     .media-tab { border: 0; background: transparent; padding: 9px 13px; font-size: 11px; font-weight: 700; cursor: pointer; }
     .media-tab[aria-selected="true"] { background: var(--ink); color: var(--white); }
+    body.letter-mode { --paper: #e8eee8; --ink: #263b32; --muted: #647367; --line: #c9d3c7; --green: #d7b36b; --tomato: #8d5360; --white: #fbf8ef; }
+    body.letter-mode .media-tab[aria-selected="true"] { background: #526a5c; }
     body.book-mode { --paper: #e9eee4; --ink: #263b32; --muted: #647367; --line: #c9d3c7; --green: #d7b36b; --tomato: #a64e5b; --white: #fbf8ef; --blue: #a9c1b2; background-image: repeating-linear-gradient(90deg, transparent 0, transparent 31px, #dce5dc 32px); }
     body.book-mode .media-switch { background: #f8f5e9; }
     body.book-mode .media-tab[aria-selected="true"] { background: #763e4b; }
@@ -116,6 +118,10 @@
     .energy-value { font: 10px var(--mono); color: var(--muted); }
     input[type="range"] { width: 100%; accent-color: var(--tomato); height: 4px; cursor: pointer; }
     .energy-scale { display: flex; justify-content: space-between; color: var(--muted); font: 9px var(--mono); margin-top: 5px; }
+    .country-row { margin-top: 21px; }
+    .country-row label { display: block; margin-bottom: 7px; }
+    .country-row select { width: 100%; }
+    .country-note { margin: 6px 0 0; color: var(--muted); font-size: 10px; line-height: 1.4; }
     .record-column { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; position: relative; overflow: hidden; background: #edf5f2; }
     .record-column::before, .record-column::after { content: ""; position: absolute; width: 195px; height: 195px; border: 1px solid #d5e5dd; border-radius: 50%; pointer-events: none; }
     .record-column::after { width: 245px; height: 245px; }
@@ -166,6 +172,54 @@
     .novel-preferences .chip { padding: 7px 9px; font-size: 10px; }
     body.book-mode .novel-preferences { background: #f2f3e8; }
     body.book-mode .panel-label strong { color: #a64e5b; }
+    .letter-page[hidden], .letter-editor[hidden], .letter-read-only[hidden], .letter-share-output[hidden] { display: none; }
+    .studio[hidden], .extras[hidden], .library-grid[hidden] { display: none; }
+    .letter-page { margin-top: 8px; }
+    .letter-page-head { margin: 0 0 22px; }
+    .letter-page-head h2 { font: 700 34px/1.1 var(--serif); margin: 0 0 8px; }
+    .letter-page-head p:last-child { color: var(--muted); font-size: 13px; margin: 0; }
+    .letter-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(340px, .82fr); gap: 24px; align-items: start; }
+    .letter-editor { display: grid; gap: 16px; }
+    .letter-field label, .letter-control-label { display: block; margin: 0 0 7px; font-size: 11px; font-weight: 700; }
+    .letter-field textarea { min-height: 100px; resize: vertical; line-height: 1.5; }
+    .letter-picker { border-top: 1px solid var(--line); padding-top: 15px; }
+    .letter-picker-tabs, .letter-patterns, .letter-stamps, .letter-colors { display: flex; flex-wrap: wrap; gap: 6px; }
+    .letter-choice-tab, .letter-style-button { border: 1px solid var(--line); background: transparent; padding: 8px 10px; font-size: 10px; cursor: pointer; }
+    .letter-choice-tab[aria-pressed="true"], .letter-style-button[aria-pressed="true"] { border-color: var(--ink); background: var(--ink); color: var(--white); }
+    .letter-catalog { display: grid; gap: 6px; margin-top: 9px; max-height: 220px; overflow: auto; }
+    .letter-item { display: flex; width: 100%; justify-content: space-between; align-items: center; gap: 12px; padding: 9px 11px; border: 1px solid var(--line); background: var(--white); text-align: left; cursor: pointer; }
+    .letter-item[aria-pressed="true"] { border-color: #526a5c; background: #e1ebe0; }
+    .letter-item strong, .letter-item span { display: block; }
+    .letter-item strong { font-size: 11px; }
+    .letter-item span { color: var(--muted); font-size: 10px; margin-top: 3px; }
+    .letter-item-mark { flex: 0 0 auto; color: var(--tomato); font-size: 16px; }
+    .letter-selected-count { color: var(--muted); font: 10px var(--mono); margin: 8px 0 0; }
+    .letter-decor { display: grid; gap: 12px; padding: 14px; border: 1px solid var(--line); background: #f5f6ef; }
+    .letter-colors { gap: 9px; }
+    .paper-swatch { width: 24px; height: 24px; border: 2px solid var(--white); outline: 1px solid var(--line); cursor: pointer; }
+    .paper-swatch[aria-pressed="true"] { outline: 2px solid var(--ink); }
+    .letter-stamp { min-width: 32px; height: 32px; padding: 2px; border: 1px solid var(--line); background: var(--white); font-size: 18px; cursor: pointer; }
+    .letter-stamp[aria-pressed="true"] { border: 2px solid var(--ink); }
+    .letter-submit-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+    .letter-submit-row .action-button { min-height: 40px; }
+    .letter-privacy { flex: 1 1 180px; margin: 0; color: var(--muted); font-size: 10px; line-height: 1.4; }
+    .letter-share-output { display: flex; gap: 8px; }
+    .letter-preview-wrap { position: sticky; top: 20px; }
+    .letter-paper { --letter-color: #fbf3dc; position: relative; min-height: 430px; padding: 62px 34px 32px; border: 1px solid #c9bea4; background-color: var(--letter-color); color: #39352d; box-shadow: 0 14px 32px #263b3218; overflow: hidden; }
+    .letter-paper.pattern-lined { background-image: repeating-linear-gradient(to bottom, transparent 0 30px, #617b6823 31px, transparent 32px); }
+    .letter-paper.pattern-grid { background-image: linear-gradient(#617b6814 1px, transparent 1px), linear-gradient(90deg, #617b6814 1px, transparent 1px); background-size: 22px 22px; }
+    .letter-paper.pattern-plain { background-image: radial-gradient(#8d765b16 .7px, transparent .7px); background-size: 9px 9px; }
+    .letter-paper-stamp { position: absolute; top: 18px; right: 20px; display: grid; place-items: center; width: 42px; height: 42px; border: 1px dashed #8d5360a6; border-radius: 50%; color: #8d5360; font-size: 24px; transform: rotate(9deg); }
+    .letter-paper-kicker { color: #7a6452; font: 9px var(--mono); text-transform: uppercase; margin: 0 0 24px; }
+    .letter-paper h3 { font: 600 23px/1.15 var(--serif); margin: 0 0 16px; overflow-wrap: anywhere; }
+    .letter-paper-message { min-height: 72px; white-space: pre-wrap; overflow-wrap: anywhere; font: 14px/1.65 var(--serif); margin: 0 0 20px; }
+    .letter-paper-items { display: grid; gap: 8px; padding: 14px 0 0; margin: 0; list-style: none; border-top: 1px solid #6c745d55; }
+    .letter-paper-items li { font-size: 11px; line-height: 1.45; }
+    .letter-paper-items a { color: #526a5c; font-weight: 700; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    .letter-paper-signoff { margin: 22px 0 0; color: #7a6452; font: italic 15px var(--serif); }
+    .letter-read-only { margin-top: 14px; text-align: center; }
+    @media (max-width: 800px) { .letter-layout { grid-template-columns: 1fr; } .letter-preview-wrap { position: static; } }
+    @media (max-width: 620px) { .letter-page-head h2 { font-size: 29px; } .letter-paper { min-height: 360px; padding: 56px 24px 26px; } .letter-share-output { flex-direction: column; } }
     .save-button { background: none; border: 0; cursor: pointer; font-size: 19px; line-height: 1; padding: 5px; color: #9ba198; }
     .save-button.saved { color: var(--tomato); }
     .listen-link { display: block; text-align: center; margin-top: 13px; color: var(--ink); font-size: 11px; font-weight: 700; text-decoration: none; padding: 10px; border: 1px solid var(--line); transition: background .18s ease; }
@@ -269,6 +323,7 @@
       <div class="media-switch" role="tablist" aria-label="Choose what to discover">
         <button class="media-tab" id="songsTab" type="button" role="tab" aria-selected="true" data-mode="songs">Songs</button>
         <button class="media-tab" id="novelsTab" type="button" role="tab" aria-selected="false" data-mode="novels">YA novels</button>
+        <button class="media-tab" id="letterTab" type="button" role="tab" aria-selected="false" data-mode="letter">Send a letter</button>
       </div>
       <section class="studio" id="discoveryStudio" aria-label="Song discovery studio">
         <div class="panel preferences">
@@ -315,6 +370,19 @@
           <div class="energy-row"><label class="field-title" id="energyTitle" for="energy">Energy level</label><span class="energy-value" id="energyValue">Low-key</span></div>
           <input id="energy" type="range" min="1" max="5" value="2" aria-label="Energy level">
           <div class="energy-scale"><span id="energyLow">Slow Sunday</span><span id="energyHigh">Dance floor</span></div>
+          <div class="country-row">
+            <label class="field-title" for="recommendationCountry">Recommendation region</label>
+            <select class="text-input" id="recommendationCountry" aria-label="Choose a country for recommendations">
+              <option value="global">Global mix</option>
+              <option value="us">United States</option>
+              <option value="uk">United Kingdom</option>
+              <option value="kr">South Korea</option>
+              <option value="jp">Japan</option>
+              <option value="in">India</option>
+              <option value="br">Brazil</option>
+            </select>
+            <p class="country-note">Regional favorites are a guide; your mood and music taste still lead.</p>
+          </div>
         </div>
         <div class="panel record-column">
           <p class="panel-label" id="centerPanelTitle" style="width:100%; align-self:stretch"><strong>02</strong> <span>Drop the needle</span></p>
@@ -377,6 +445,67 @@
           <div id="playlistContent" aria-live="polite"><p class="playlist-empty">Create a playlist, then add tracks from search or your current mix.</p></div>
           <div id="similarTracks" aria-live="polite"></div>
         </section>
+      </section>
+      <section class="letter-page" id="letterPage" aria-labelledby="letterPageTitle" hidden>
+        <div class="letter-page-head">
+          <p class="eyebrow">A note worth sending</p>
+          <h2 id="letterPageTitle">Put a little feeling in the mail</h2>
+          <p id="letterPageDescription">Write a note, tuck in a song or book, and make a link just for them.</p>
+        </div>
+        <div class="letter-layout">
+          <div class="letter-editor" id="letterEditor">
+            <div class="letter-field"><label for="letterTo">To</label><input class="text-input" id="letterTo" type="text" maxlength="48" placeholder="Their name or nickname"></div>
+            <div class="letter-field"><label for="letterMessage">Your note</label><textarea class="text-input" id="letterMessage" maxlength="500" placeholder="Write what you want them to hear..."></textarea></div>
+            <div class="letter-picker">
+              <p class="letter-control-label">Add something to your letter</p>
+              <div class="letter-picker-tabs" role="group" aria-label="Choose songs or books">
+                <button class="letter-choice-tab" type="button" data-letter-type="songs" aria-pressed="true">Songs</button>
+                <button class="letter-choice-tab" type="button" data-letter-type="novels" aria-pressed="false">YA novels</button>
+              </div>
+              <input class="text-input" id="letterItemSearch" type="search" placeholder="Search the shelves" aria-label="Search songs or books to include">
+              <div class="letter-catalog" id="letterCatalog" aria-live="polite"></div>
+              <p class="letter-selected-count" id="letterSelectedCount">0 / 6 selected</p>
+            </div>
+            <div class="letter-decor">
+              <div><span class="letter-control-label">Paper color</span><div class="letter-colors" role="group" aria-label="Choose paper color">
+                <button class="paper-swatch" type="button" data-paper-color="#fbf3dc" aria-label="Warm paper" aria-pressed="true" style="background:#fbf3dc"></button>
+                <button class="paper-swatch" type="button" data-paper-color="#e8f0df" aria-label="Sage paper" aria-pressed="false" style="background:#e8f0df"></button>
+                <button class="paper-swatch" type="button" data-paper-color="#f3e4e9" aria-label="Rose paper" aria-pressed="false" style="background:#f3e4e9"></button>
+                <button class="paper-swatch" type="button" data-paper-color="#e5edf5" aria-label="Blue paper" aria-pressed="false" style="background:#e5edf5"></button>
+              </div></div>
+              <div><span class="letter-control-label">Page pattern</span><div class="letter-patterns" role="group" aria-label="Choose page pattern">
+                <button class="letter-style-button" type="button" data-paper-pattern="lined" aria-pressed="true">Lines</button>
+                <button class="letter-style-button" type="button" data-paper-pattern="grid" aria-pressed="false">Grid</button>
+                <button class="letter-style-button" type="button" data-paper-pattern="plain" aria-pressed="false">Speckled</button>
+              </div></div>
+              <div><span class="letter-control-label">Stamp</span><div class="letter-stamps" role="group" aria-label="Choose a letter stamp">
+                <button class="letter-stamp" type="button" data-letter-stamp="✦" aria-label="Sparkle stamp" aria-pressed="true">✦</button>
+                <button class="letter-stamp" type="button" data-letter-stamp="♫" aria-label="Music stamp" aria-pressed="false">♫</button>
+                <button class="letter-stamp" type="button" data-letter-stamp="♥" aria-label="Heart stamp" aria-pressed="false">♥</button>
+                <button class="letter-stamp" type="button" data-letter-stamp="☼" aria-label="Sun stamp" aria-pressed="false">☼</button>
+              </div></div>
+            </div>
+            <div class="letter-submit-row">
+              <button class="action-button" id="createLetterLink" type="button">Create letter link</button>
+              <p class="letter-privacy">Anyone with the link can read this letter.</p>
+            </div>
+            <div class="letter-share-output" id="letterShareOutput" hidden>
+              <input class="text-input" id="letterShareLink" type="text" readonly aria-label="Your letter share link">
+              <button class="small-button" id="copyLetterLink" type="button">Copy link</button>
+            </div>
+          </div>
+          <div class="letter-preview-wrap">
+            <article class="letter-paper pattern-lined" id="letterPaper" aria-label="Letter preview">
+              <span class="letter-paper-stamp" id="letterPreviewStamp">✦</span>
+              <p class="letter-paper-kicker">A little note, just for you</p>
+              <h3 id="letterPreviewGreeting">Dear friend,</h3>
+              <p class="letter-paper-message" id="letterPreviewMessage">Your note will find its way here.</p>
+              <ul class="letter-paper-items" id="letterPreviewItems"></ul>
+              <p class="letter-paper-signoff">Made with a little care.</p>
+            </article>
+            <div class="letter-read-only" id="letterReadOnly" hidden><button class="small-button" id="writeOwnLetter" type="button">Write a letter of your own</button></div>
+          </div>
+        </div>
       </section>
       <footer class="footer"><span>Made for the long way home</span><span>Keep the needle moving</span></footer>
     </main>
@@ -459,6 +588,15 @@
       { title: "The Ballad of Songbirds and Snakes", author: "Suzanne Collins", category: "Dystopian fiction", songGenres: ["country", "electronic"], moods: ["focused", "alive"], energy: 4, color: "#dbc28c" },
       { title: "The Fault in Our Stars", author: "John Green", category: "Contemporary romance", songGenres: ["indie", "folk"], moods: ["focused", "easy"], energy: 2, color: "#b9d1e2" }
     ];
+    const countryProfiles = {
+      global: { songGenres: [], bookShelves: [] },
+      us: { songGenres: ["pop", "hip-hop", "country"], bookShelves: ["contemporary", "mystery", "fantasy"] },
+      uk: { songGenres: ["indie", "folk", "pop"], bookShelves: ["fantasy", "mystery", "contemporary"] },
+      kr: { songGenres: ["k-pop", "pop"], bookShelves: ["romance", "fantasy"] },
+      jp: { songGenres: ["electronic", "pop"], bookShelves: ["fantasy", "sci-fi"] },
+      in: { songGenres: ["pop", "soul"], bookShelves: ["romance", "contemporary"] },
+      br: { songGenres: ["pop", "electronic"], bookShelves: ["romance", "adventure"] }
+    };
     const novelTags = {
       "Heartstopper": { shelves: ["romance", "contemporary"], tropes: ["slow-burn", "coming-of-age"] },
       "The Sun Is Also a Star": { shelves: ["romance", "contemporary"], tropes: ["slow-burn", "secrets"] },
@@ -486,11 +624,14 @@
       mood: "easy",
       genres: new Set(["indie"]),
       energy: 2,
+      country: localStorage.getItem("side-a-country") || "global",
       current: [],
       mode: "songs",
       currentBooks: [],
       bookGenres: new Set(JSON.parse(localStorage.getItem("side-a-book-genres") || "[]")),
       bookTropes: new Set(JSON.parse(localStorage.getItem("side-a-book-tropes") || "[]")),
+      letterDraft: { type: "songs", items: [], stamp: "✦", color: "#fbf3dc", pattern: "lined" },
+      sharedLetter: null,
       saved: new Set(JSON.parse(localStorage.getItem("side-a-saved") || "[]")),
       savedBooks: new Set(JSON.parse(localStorage.getItem("side-a-saved-books") || "[]")),
       playlists: JSON.parse(localStorage.getItem("side-a-playlists") || "[]"),
@@ -508,7 +649,8 @@
       return `https://images.unsplash.com/${id}?auto=format&fit=crop&w=140&h=140&q=80`;
     }
     function score(song) {
-      return (state.genres.has(song.genre) ? 5 : 0) + (song.moods.includes(state.mood) ? 3 : 0) - Math.abs(song.energy - state.energy);
+      const countryScore = countryProfiles[state.country]?.songGenres.includes(song.genre) ? 2 : 0;
+      return (state.genres.has(song.genre) ? 5 : 0) + (song.moods.includes(state.mood) ? 3 : 0) + countryScore - Math.abs(song.energy - state.energy);
     }
     function chooseSongs() {
       const ranked = songs.map(song => ({ song, score: score(song), tie: Math.random() }))
@@ -535,11 +677,13 @@
       const fallbackSongs = favoriteSongs.length ? favoriteSongs : state.current;
       const favoriteGenres = new Set([...state.genres, ...fallbackSongs.map(song => song.genre)]);
       const favoriteMoods = new Set([state.mood, ...fallbackSongs.flatMap(song => song.moods)]);
+      const regionalShelves = countryProfiles[state.country]?.bookShelves || [];
       return novels.map(novel => ({
         novel,
         score: (novel.moods.includes(state.mood) ? 5 : 0)
           + novel.songGenres.filter(genre => favoriteGenres.has(genre)).length * 3
           + novel.moods.filter(mood => favoriteMoods.has(mood)).length * 2
+          + novel.shelves.filter(genre => regionalShelves.includes(genre)).length * 2
           + novel.shelves.filter(genre => state.bookGenres.has(genre)).length * 8
           + novel.tropes.filter(trope => state.bookTropes.has(trope)).length * 6
           - Math.abs(novel.energy - state.energy)
@@ -812,17 +956,159 @@
           results.append(row);
         });
       }
-      function makeShareToken(playlist) {
-        const bytes = new TextEncoder().encode(JSON.stringify({ name: playlist.name, tracks: playlist.tracks }));
+      function makeShareToken(payload) {
+        const bytes = new TextEncoder().encode(JSON.stringify(payload));
         let binary = "";
         bytes.forEach(byte => { binary += String.fromCharCode(byte); });
         return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
       }
+      function decodeShareToken(token) {
+        const base64 = token.replace(/-/g, "+").replace(/_/g, "/");
+        const padded = base64.padEnd(Math.ceil(base64.length / 4) * 4, "=");
+        const binary = atob(padded);
+        const bytes = Uint8Array.from(binary, character => character.charCodeAt(0));
+        return JSON.parse(new TextDecoder().decode(bytes));
+      }
+      function sharePageUrl() {
+        const url = location.protocol === "file:"
+          ? new URL("https://nitchapansri.github.io/side-a-vinyl/")
+          : new URL(location.href);
+        url.hash = "";
+        return url;
+      }
+      function letterCatalog() {
+        return state.letterDraft.type === "songs"
+          ? songs.map(song => ({ type: "songs", title: song.title, creator: song.artist, detail: song.genre }))
+          : novels.map(novel => ({ type: "novels", title: novel.title, creator: novel.author, detail: novel.category }));
+      }
+      function renderLetterCatalog() {
+        const container = document.getElementById("letterCatalog");
+        container.replaceChildren();
+        const term = document.getElementById("letterItemSearch").value.trim().toLowerCase();
+        const matches = letterCatalog().filter(item => `${item.title} ${item.creator} ${item.detail}`.toLowerCase().includes(term)).slice(0, 8);
+        if (!matches.length) {
+          const note = document.createElement("p");
+          note.className = "empty-note";
+          note.textContent = "No matches on this shelf. Try another title or name.";
+          container.append(note);
+          return;
+        }
+        matches.forEach(item => {
+          const key = `${item.type}:${item.title}`;
+          const selected = state.letterDraft.items.some(entry => `${entry.type}:${entry.title}` === key);
+          const button = document.createElement("button");
+          button.className = "letter-item";
+          button.type = "button";
+          button.setAttribute("aria-pressed", String(selected));
+          const copy = document.createElement("span");
+          const title = document.createElement("strong");
+          title.textContent = item.title;
+          const creator = document.createElement("span");
+          creator.textContent = `${item.creator} · ${item.detail}`;
+          copy.append(title, creator);
+          const mark = document.createElement("span");
+          mark.className = "letter-item-mark";
+          mark.textContent = selected ? "✓" : "+";
+          button.append(copy, mark);
+          button.addEventListener("click", () => {
+            if (selected) state.letterDraft.items = state.letterDraft.items.filter(entry => `${entry.type}:${entry.title}` !== key);
+            else if (state.letterDraft.items.length >= 6) return showToast("Choose up to six things for one letter");
+            else state.letterDraft.items.push({ type: item.type, title: item.title });
+            renderLetterCatalog();
+            updateLetterPreview();
+          });
+          container.append(button);
+        });
+      }
+      function renderLetterPaper(letter) {
+        const paper = document.getElementById("letterPaper");
+        paper.className = `letter-paper pattern-${letter.pattern}`;
+        paper.style.setProperty("--letter-color", letter.color);
+        document.getElementById("letterPreviewStamp").textContent = letter.stamp;
+        document.getElementById("letterPreviewGreeting").textContent = `Dear ${letter.to || "friend"},`;
+        document.getElementById("letterPreviewMessage").textContent = letter.message || "Your note will find its way here.";
+        const itemList = document.getElementById("letterPreviewItems");
+        itemList.replaceChildren();
+        letter.items.forEach(item => {
+          const song = item.type === "songs" ? songs.find(entry => entry.title === item.title) : null;
+          const novel = item.type === "novels" ? novels.find(entry => entry.title === item.title) : null;
+          const creator = song?.artist || novel?.author || item.creator || "";
+          const row = document.createElement("li");
+          const link = document.createElement("a");
+          link.target = "_blank";
+          link.rel = "noreferrer";
+          link.textContent = item.title;
+          link.href = song
+            ? `https://open.spotify.com/search/${encodeURIComponent(`${song.title} ${song.artist}`)}`
+            : `https://www.google.com/search?tbm=bks&q=${encodeURIComponent(`${item.title} ${creator}`)}`;
+          row.append(link, document.createTextNode(` · ${creator}`));
+          itemList.append(row);
+        });
+      }
+      function updateLetterPreview() {
+        const selectedItems = state.letterDraft.items.map(item => {
+          const catalogItem = letterCatalog().find(entry => entry.type === item.type && entry.title === item.title);
+          return catalogItem || item;
+        });
+        document.getElementById("letterSelectedCount").textContent = `${selectedItems.length} / 6 selected`;
+        renderLetterPaper({
+          to: document.getElementById("letterTo").value.trim(),
+          message: document.getElementById("letterMessage").value.trim(),
+          items: selectedItems,
+          stamp: state.letterDraft.stamp,
+          color: state.letterDraft.color,
+          pattern: state.letterDraft.pattern
+        });
+      }
+      function loadSharedLetter() {
+        if (!location.hash.startsWith("#letter=")) return;
+        try {
+          const payload = decodeShareToken(location.hash.slice("#letter=".length));
+          if (typeof payload.to !== "string" || typeof payload.message !== "string" || !Array.isArray(payload.items)) return;
+          const validItems = payload.items.filter(item => item && ((item.type === "songs" && songs.some(song => song.title === item.title)) || (item.type === "novels" && novels.some(novel => novel.title === item.title)))).slice(0, 6);
+          if (!payload.id || !validItems.length) return;
+          state.sharedLetter = {
+            id: String(payload.id),
+            to: payload.to.slice(0, 48),
+            message: payload.message.slice(0, 500),
+            items: validItems,
+            stamp: ["✦", "♫", "♥", "☼"].includes(payload.stamp) ? payload.stamp : "✦",
+            color: ["#fbf3dc", "#e8f0df", "#f3e4e9", "#e5edf5"].includes(payload.color) ? payload.color : "#fbf3dc",
+            pattern: ["lined", "grid", "plain"].includes(payload.pattern) ? payload.pattern : "lined"
+          };
+        } catch {
+          showToast("That letter link could not be opened");
+        }
+      }
+      function createLetterShare() {
+        if (!state.letterDraft.items.length) return showToast("Add a song or book to your letter first");
+        const payload = {
+          id: `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`,
+          to: document.getElementById("letterTo").value.trim().slice(0, 48),
+          message: document.getElementById("letterMessage").value.trim().slice(0, 500),
+          items: state.letterDraft.items,
+          stamp: state.letterDraft.stamp,
+          color: state.letterDraft.color,
+          pattern: state.letterDraft.pattern
+        };
+        const url = sharePageUrl();
+        url.hash = `letter=${makeShareToken(payload)}`;
+        document.getElementById("letterShareLink").value = url.toString();
+        document.getElementById("letterShareOutput").hidden = false;
+        showToast("A one-of-a-kind letter link is ready");
+      }
+      function showReceivedLetter() {
+        if (!state.sharedLetter) return;
+        document.getElementById("letterEditor").hidden = true;
+        document.getElementById("letterReadOnly").hidden = false;
+        document.getElementById("letterPageDescription").textContent = "Someone sent a little note your way.";
+        renderLetterPaper(state.sharedLetter);
+      }
       function openPlaylistShare() {
         const playlist = activePlaylist();
         if (!playlist) return;
-        const url = new URL(location.href);
-        url.hash = `playlist=${makeShareToken(playlist)}`;
+        const url = sharePageUrl();
+        url.hash = `playlist=${makeShareToken({ name: playlist.name, tracks: playlist.tracks })}`;
         const shareUrl = url.toString();
         document.getElementById("shareLinkInput").value = shareUrl;
         document.getElementById("qrImage").src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(shareUrl)}`;
@@ -834,10 +1120,8 @@
       function importSharedPlaylist() {
         if (!location.hash.startsWith("#playlist=")) return;
         try {
-          const token = location.hash.slice("#playlist=".length).replace(/-/g, "+").replace(/_/g, "/");
-          const binary = atob(token);
-          const bytes = Uint8Array.from(binary, character => character.charCodeAt(0));
-          const payload = JSON.parse(new TextDecoder().decode(bytes));
+          const token = location.hash.slice("#playlist=".length);
+          const payload = decodeShareToken(token);
           if (typeof payload.name !== "string" || !Array.isArray(payload.tracks)) return;
           const sharedId = `shared-${token}`;
           const existing = state.playlists.find(playlist => playlist.id === sharedId);
@@ -918,12 +1202,70 @@
       record.classList.add("spinning");
       setTimeout(() => record.classList.remove("spinning"), 2900);
     }
+    function setMode(mode) {
+      state.mode = mode;
+      state.showingSaved = false;
+      const isLetter = mode === "letter";
+      document.body.classList.toggle("book-mode", mode === "novels");
+      document.body.classList.toggle("letter-mode", isLetter);
+      document.querySelectorAll(".media-tab").forEach(tab => tab.setAttribute("aria-selected", String(tab.dataset.mode === mode)));
+      document.getElementById("discoveryStudio").hidden = isLetter;
+      document.querySelector(".extras").hidden = isLetter;
+      document.querySelector(".library-grid").hidden = isLetter;
+      document.getElementById("letterPage").hidden = !isLetter;
+      document.getElementById("savedLink").hidden = isLetter;
+      if (isLetter) {
+        document.getElementById("topNote").textContent = "A little note, made just for them";
+        document.getElementById("pageTitle").innerHTML = "Send a little<br>letter.";
+        document.getElementById("introEyebrow").textContent = "A note worth sending";
+        document.querySelector(".intro-copy").textContent = "Pair a few words with a song or book and send it their way.";
+        document.getElementById("letterPageDescription").textContent = state.sharedLetter ? "Someone sent a little note your way." : "Write a note, tuck in a song or book, and make a link just for them.";
+        renderLetterCatalog();
+        if (state.sharedLetter) showReceivedLetter();
+        else {
+          document.getElementById("letterEditor").hidden = false;
+          document.getElementById("letterReadOnly").hidden = true;
+          updateLetterPreview();
+        }
+        return;
+      }
+      document.getElementById("letterEditor").hidden = false;
+      document.getElementById("letterReadOnly").hidden = true;
+      document.getElementById("letterPageDescription").textContent = "Write a note, tuck in a song or book, and make a link just for them.";
+      document.getElementById("topNote").textContent = mode === "novels" ? "A quiet corner for your next read" : "A little more feeling in your listening";
+      document.getElementById("pageTitle").innerHTML = mode === "novels" ? "Find your next<br>read." : "Find your next<br>favorite.";
+      document.getElementById("introEyebrow").textContent = mode === "novels" ? "The YA reading room" : "Your personal listening booth";
+      document.querySelector(".intro-copy").textContent = mode === "novels"
+        ? "Your mood and music favorites can point to your next young-adult read."
+        : "Set the mood. Pick a sound. We’ll find the song that feels like it was waiting for you.";
+      document.getElementById("discoveryStudio").setAttribute("aria-label", mode === "novels" ? "Young adult novel discovery" : "Song discovery studio");
+      document.getElementById("tastePanelTitle").textContent = mode === "novels" ? "Your reading taste" : "Your taste";
+      document.getElementById("songSearch").placeholder = mode === "novels" ? "Novel, author, or theme" : "Song, artist, or genre";
+      document.getElementById("songSearch").setAttribute("aria-label", mode === "novels" ? "Search novels, authors, or themes" : "Search songs, artists, or genres");
+      document.getElementById("genreTitle").textContent = mode === "novels" ? "Pick music genres you like" : "Pick your shelves";
+      document.getElementById("novelPreferences").hidden = mode !== "novels";
+      document.getElementById("energyTitle").textContent = mode === "novels" ? "Story pace" : "Energy level";
+      document.getElementById("energyLow").textContent = mode === "novels" ? "Quiet chapter" : "Slow Sunday";
+      document.getElementById("energyHigh").textContent = mode === "novels" ? "Page-turner" : "Dance floor";
+      document.getElementById("energyValue").textContent = (mode === "novels"
+        ? ["Meandering", "Gentle", "Steady", "Page-turner", "Can't put it down"]
+        : ["Slow Sunday", "Low-key", "Mid-tempo", "Upbeat", "Full volume"])[state.energy - 1];
+      document.querySelector("#centerPanelTitle span").textContent = mode === "novels" ? "Open the cover" : "Drop the needle";
+      document.querySelector("#resultsPanelTitle span").textContent = mode === "novels" ? "On the bookstand" : "On the turntable";
+      document.querySelector(".label-customizer").setAttribute("aria-label", mode === "novels" ? "Customize book cover" : "Customize your record label");
+      document.getElementById("labelText").setAttribute("aria-label", mode === "novels" ? "Book cover text" : "Record label text");
+      document.querySelectorAll("[data-book-genre]").forEach(chip => chip.setAttribute("aria-pressed", String(state.bookGenres.has(chip.dataset.bookGenre))));
+      document.querySelectorAll("[data-book-trope]").forEach(chip => chip.setAttribute("aria-pressed", String(state.bookTropes.has(chip.dataset.bookTrope))));
+      updateSavedCount();
+      applyLabel();
+      spin();
+      renderSearchResults(document.getElementById("songSearch").value);
+    }
     document.querySelectorAll(".mood").forEach(button => button.addEventListener("click", () => {
       document.querySelectorAll(".mood").forEach(item => item.setAttribute("aria-pressed", String(item === button)));
       state.mood = button.dataset.mood;
     }));
-    document.querySelectorAll(".chip").forEach(button => button.addEventListener("click", () => {
-      if (!button.dataset.genre) return;
+    document.querySelectorAll(".chip[data-genre]").forEach(button => button.addEventListener("click", () => {
       const genre = button.dataset.genre;
       if (state.genres.has(genre)) {
         if (state.genres.size === 1) return showToast("Keep at least one shelf in the mix");
@@ -936,6 +1278,14 @@
       document.getElementById("energyValue").textContent = (state.mode === "novels"
         ? ["Meandering", "Gentle", "Steady", "Page-turner", "Can't put it down"]
         : ["Slow Sunday", "Low-key", "Mid-tempo", "Upbeat", "Full volume"])[state.energy - 1];
+    });
+    const countrySelect = document.getElementById("recommendationCountry");
+    countrySelect.value = countryProfiles[state.country] ? state.country : "global";
+    state.country = countrySelect.value;
+    countrySelect.addEventListener("change", event => {
+      state.country = event.target.value;
+      localStorage.setItem("side-a-country", state.country);
+      spin();
     });
     document.getElementById("spinButton").addEventListener("click", spin);
     document.getElementById("savedLink").addEventListener("click", () => {
@@ -961,40 +1311,51 @@
         renderTracks(state.current);
       }
     });
-    document.querySelectorAll(".media-tab").forEach(button => button.addEventListener("click", () => {
-      state.mode = button.dataset.mode;
-      state.showingSaved = false;
-      document.body.classList.toggle("book-mode", state.mode === "novels");
-      document.querySelectorAll(".media-tab").forEach(tab => tab.setAttribute("aria-selected", String(tab === button)));
-      document.getElementById("topNote").textContent = state.mode === "novels" ? "A quiet corner for your next read" : "A little more feeling in your listening";
-      document.getElementById("pageTitle").innerHTML = state.mode === "novels" ? "Find your next<br>read." : "Find your next<br>favorite.";
-      document.getElementById("introEyebrow").textContent = state.mode === "novels" ? "The YA reading room" : "Your personal listening booth";
-      document.querySelector(".intro-copy").textContent = state.mode === "novels"
-        ? "Your mood and music favorites can point to your next young-adult read."
-        : "Set the mood. Pick a sound. We’ll find the song that feels like it was waiting for you.";
-      document.getElementById("discoveryStudio").setAttribute("aria-label", state.mode === "novels" ? "Young adult novel discovery" : "Song discovery studio");
-      document.getElementById("tastePanelTitle").textContent = state.mode === "novels" ? "Your reading taste" : "Your taste";
-      document.getElementById("songSearch").placeholder = state.mode === "novels" ? "Novel, author, or theme" : "Song, artist, or genre";
-      document.getElementById("songSearch").setAttribute("aria-label", state.mode === "novels" ? "Search novels, authors, or themes" : "Search songs, artists, or genres");
-      document.getElementById("genreTitle").textContent = state.mode === "novels" ? "Pick music genres you like" : "Pick your shelves";
-      document.getElementById("novelPreferences").hidden = state.mode !== "novels";
-      document.getElementById("energyTitle").textContent = state.mode === "novels" ? "Story pace" : "Energy level";
-      document.getElementById("energyLow").textContent = state.mode === "novels" ? "Quiet chapter" : "Slow Sunday";
-      document.getElementById("energyHigh").textContent = state.mode === "novels" ? "Page-turner" : "Dance floor";
-      document.getElementById("energyValue").textContent = (state.mode === "novels"
-        ? ["Meandering", "Gentle", "Steady", "Page-turner", "Can't put it down"]
-        : ["Slow Sunday", "Low-key", "Mid-tempo", "Upbeat", "Full volume"])[state.energy - 1];
-      document.querySelector("#centerPanelTitle span").textContent = state.mode === "novels" ? "Open the cover" : "Drop the needle";
-      document.querySelector("#resultsPanelTitle span").textContent = state.mode === "novels" ? "On the bookstand" : "On the turntable";
-      document.querySelector(".label-customizer").setAttribute("aria-label", state.mode === "novels" ? "Customize book cover" : "Customize your record label");
-      document.getElementById("labelText").setAttribute("aria-label", state.mode === "novels" ? "Book cover text" : "Record label text");
-      document.querySelectorAll("[data-book-genre]").forEach(chip => chip.setAttribute("aria-pressed", String(state.bookGenres.has(chip.dataset.bookGenre))));
-      document.querySelectorAll("[data-book-trope]").forEach(chip => chip.setAttribute("aria-pressed", String(state.bookTropes.has(chip.dataset.bookTrope))));
-      updateSavedCount();
-      applyLabel();
-      spin();
-      renderSearchResults(document.getElementById("songSearch").value);
+    document.querySelectorAll(".media-tab").forEach(button => button.addEventListener("click", () => setMode(button.dataset.mode)));
+    document.querySelectorAll(".media-tab").forEach(button => button.addEventListener("click", () => setMode(button.dataset.mode)));
+    document.querySelectorAll(".letter-choice-tab").forEach(button => button.addEventListener("click", () => {
+      state.letterDraft.type = button.dataset.letterType;
+      document.querySelectorAll(".letter-choice-tab").forEach(tab => tab.setAttribute("aria-pressed", String(tab === button)));
+      document.getElementById("letterItemSearch").value = "";
+      renderLetterCatalog();
     }));
+    document.getElementById("letterItemSearch").addEventListener("input", renderLetterCatalog);
+    document.getElementById("letterTo").addEventListener("input", updateLetterPreview);
+    document.getElementById("letterMessage").addEventListener("input", updateLetterPreview);
+    document.querySelectorAll("[data-paper-color]").forEach(button => button.addEventListener("click", () => {
+      state.letterDraft.color = button.dataset.paperColor;
+      document.querySelectorAll("[data-paper-color]").forEach(item => item.setAttribute("aria-pressed", String(item === button)));
+      updateLetterPreview();
+    }));
+    document.querySelectorAll("[data-paper-pattern]").forEach(button => button.addEventListener("click", () => {
+      state.letterDraft.pattern = button.dataset.paperPattern;
+      document.querySelectorAll("[data-paper-pattern]").forEach(item => item.setAttribute("aria-pressed", String(item === button)));
+      updateLetterPreview();
+    }));
+    document.querySelectorAll("[data-letter-stamp]").forEach(button => button.addEventListener("click", () => {
+      state.letterDraft.stamp = button.dataset.letterStamp;
+      document.querySelectorAll("[data-letter-stamp]").forEach(item => item.setAttribute("aria-pressed", String(item === button)));
+      updateLetterPreview();
+    }));
+    document.getElementById("createLetterLink").addEventListener("click", createLetterShare);
+    document.getElementById("copyLetterLink").addEventListener("click", async () => {
+      const input = document.getElementById("letterShareLink");
+      try {
+        await navigator.clipboard.writeText(input.value);
+        showToast("Letter link copied");
+      } catch {
+        input.select();
+        const copied = document.execCommand("copy");
+        showToast(copied ? "Letter link copied" : "Select the link to copy it");
+      }
+    });
+    document.getElementById("writeOwnLetter").addEventListener("click", () => {
+      state.sharedLetter = null;
+      const url = new URL(location.href);
+      url.hash = "";
+      history.replaceState(null, "", url.toString());
+      setMode("letter");
+    });
     document.querySelectorAll("[data-book-genre], [data-book-trope]").forEach(button => {
       const isGenre = Boolean(button.dataset.bookGenre);
       const preferenceSet = isGenre ? state.bookGenres : state.bookTropes;
@@ -1119,11 +1480,13 @@
       document.getElementById("searchTitle").scrollIntoView({ behavior: "smooth", block: "center" });
       showToast(`Crate-digging prompt: explore ${genre}`);
     });
+    loadSharedLetter();
     importSharedPlaylist();
     updateSavedCount();
     renderPlaylists();
     state.current = chooseSongs();
     renderTracks(state.current);
+    if (state.sharedLetter) setMode("letter");
   </script>
 </body>
 </html>
