@@ -55,6 +55,25 @@
     .media-switch { display: inline-flex; gap: 3px; border: 1px solid var(--line); padding: 3px; margin: 0 0 18px; background: var(--white); }
     .media-tab { border: 0; background: transparent; padding: 9px 13px; font-size: 11px; font-weight: 700; cursor: pointer; }
     .media-tab[aria-selected="true"] { background: var(--ink); color: var(--white); }
+    body.book-mode { --paper: #e9eee4; --ink: #263b32; --muted: #647367; --line: #c9d3c7; --green: #d7b36b; --tomato: #a64e5b; --white: #fbf8ef; --blue: #a9c1b2; background-image: repeating-linear-gradient(90deg, transparent 0, transparent 31px, #dce5dc 32px); }
+    body.book-mode .media-switch { background: #f8f5e9; }
+    body.book-mode .media-tab[aria-selected="true"] { background: #763e4b; }
+    body.book-mode .studio { border-color: #c2cdbd; box-shadow: 0 12px 30px #283b3210; }
+    body.book-mode .record-column { background: #e1e9df; }
+    body.book-mode .record-column::before, body.book-mode .record-column::after { width: 176px; height: 245px; border-radius: 2px; border-color: #c7d4c6; }
+    body.book-mode .record-column::after { width: 195px; height: 265px; }
+    body.book-mode .record { width: min(178px, 62vw); aspect-ratio: .72; border-radius: 3px; background: linear-gradient(90deg, #5a3740 0 9px, #804b55 10px 100%); box-shadow: 7px 12px 22px #263b3233; }
+    body.book-mode .record::before { inset: 9px 9px 9px 17px; border: 1px solid #ffffff62; border-radius: 1px; }
+    body.book-mode .record-label { width: calc(100% - 34px); height: calc(100% - 22px); margin-left: 9px; border-radius: 1px; background: #ab6970; color: #fffaf0; font: 10px var(--serif); }
+    body.book-mode .record-label::after { display: none; }
+    body.book-mode .record-label span:first-child { margin: 0; max-width: 100%; padding: 6px; font: 700 14px/1.2 var(--serif); overflow-wrap: anywhere; }
+    body.book-mode .record-label span:last-child { margin-top: 12px; font: 9px var(--mono); }
+    body.book-mode .record-label .label-decoration { top: 8px; right: 8px; color: #f1d78f; }
+    body.book-mode .record-caption { color: #53675b; }
+    body.book-mode .spin-button { background: #d7b36b; color: #263b32; }
+    body.book-mode .chip[aria-pressed="true"] { background: #456251; border-color: #456251; }
+    body.book-mode .mood[aria-pressed="true"] { background: #e1e8d8; border-color: #456251; }
+    body.book-mode .book-cover { border-left: 5px solid #ffffff8a; box-shadow: inset -3px 0 #0000000c, 1px 2px 3px #263b3220; }
     .studio {
       display: grid;
       grid-template-columns: minmax(270px, .92fr) minmax(290px, 1fr) minmax(300px, 1.08fr);
@@ -140,6 +159,13 @@
     .track-meta { font: 9px var(--mono); color: var(--tomato); margin-top: 6px; }
     .book-result { grid-template-columns: 55px minmax(0, 1fr) 32px; }
     .book-cover { width: 55px; height: 55px; display: grid; place-items: center; color: var(--ink); font: 700 17px var(--serif); border: 1px solid #00000012; }
+    .novel-only[hidden] { display: none; }
+    .novel-preferences { padding: 14px 12px 2px; margin: -5px 0 21px; border-left: 2px solid #a64e5b; background: #f3f4ea; }
+    .novel-preferences .field-title { margin-bottom: 9px; }
+    .novel-preferences .genre-list { gap: 5px; margin-bottom: 15px; }
+    .novel-preferences .chip { padding: 7px 9px; font-size: 10px; }
+    body.book-mode .novel-preferences { background: #f2f3e8; }
+    body.book-mode .panel-label strong { color: #a64e5b; }
     .save-button { background: none; border: 0; cursor: pointer; font-size: 19px; line-height: 1; padding: 5px; color: #9ba198; }
     .save-button.saved { color: var(--tomato); }
     .listen-link { display: block; text-align: center; margin-top: 13px; color: var(--ink); font-size: 11px; font-weight: 700; text-decoration: none; padding: 10px; border: 1px solid var(--line); transition: background .18s ease; }
@@ -232,21 +258,21 @@
   <div class="page">
     <header class="topbar">
       <a class="brand" href="#" aria-label="Side A home"><span class="brand-mark" aria-hidden="true"></span>side a</a>
-      <span class="top-note">A little more feeling in your listening</span>
+      <span class="top-note" id="topNote">A little more feeling in your listening</span>
       <button class="top-link" id="savedLink" type="button">Saved tracks <span id="savedCount">0</span></button>
     </header>
     <main>
       <section class="intro" aria-labelledby="pageTitle">
-        <div><p class="eyebrow">Your personal listening booth</p><h1 id="pageTitle">Find your next<br>favorite.</h1></div>
+        <div><p class="eyebrow" id="introEyebrow">Your personal listening booth</p><h1 id="pageTitle">Find your next<br>favorite.</h1></div>
         <p class="intro-copy">Set the mood. Pick a sound. We’ll find the song that feels like it was waiting for you.</p>
       </section>
       <div class="media-switch" role="tablist" aria-label="Choose what to discover">
         <button class="media-tab" id="songsTab" type="button" role="tab" aria-selected="true" data-mode="songs">Songs</button>
         <button class="media-tab" id="novelsTab" type="button" role="tab" aria-selected="false" data-mode="novels">YA novels</button>
       </div>
-      <section class="studio" aria-label="Song discovery studio">
+      <section class="studio" id="discoveryStudio" aria-label="Song discovery studio">
         <div class="panel preferences">
-          <p class="panel-label"><strong>01</strong> Your taste</p>
+          <p class="panel-label"><strong>01</strong> <span id="tastePanelTitle">Your taste</span></p>
           <p class="field-title">What are you in the mood for?</p>
           <div class="mood-list" role="group" aria-label="Choose a mood">
             <button class="mood" type="button" data-mood="easy" aria-pressed="true"><i>☼</i>Easy</button>
@@ -266,12 +292,32 @@
             <button class="chip" type="button" data-genre="country" aria-pressed="false">Country</button>
             <button class="chip" type="button" data-genre="k-pop" aria-pressed="false">K-pop</button>
           </div>
-          <div class="energy-row"><label class="field-title" for="energy">Energy level</label><span class="energy-value" id="energyValue">Low-key</span></div>
+          <div class="novel-preferences novel-only" id="novelPreferences" hidden>
+            <p class="field-title">Choose a book shelf</p>
+            <div class="genre-list" role="group" aria-label="Choose novel genres">
+              <button class="chip" type="button" data-book-genre="romance" aria-pressed="false">Romance</button>
+              <button class="chip" type="button" data-book-genre="fantasy" aria-pressed="false">Fantasy</button>
+              <button class="chip" type="button" data-book-genre="mystery" aria-pressed="false">Mystery</button>
+              <button class="chip" type="button" data-book-genre="contemporary" aria-pressed="false">Contemporary</button>
+              <button class="chip" type="button" data-book-genre="sci-fi" aria-pressed="false">Sci-fi</button>
+              <button class="chip" type="button" data-book-genre="adventure" aria-pressed="false">Adventure</button>
+            </div>
+            <p class="field-title">Pick your story ingredients</p>
+            <div class="genre-list" role="group" aria-label="Choose story tropes">
+              <button class="chip" type="button" data-book-trope="found-family" aria-pressed="false">Found family</button>
+              <button class="chip" type="button" data-book-trope="coming-of-age" aria-pressed="false">Coming of age</button>
+              <button class="chip" type="button" data-book-trope="slow-burn" aria-pressed="false">Slow burn</button>
+              <button class="chip" type="button" data-book-trope="secrets" aria-pressed="false">Secrets</button>
+              <button class="chip" type="button" data-book-trope="heist" aria-pressed="false">Heists</button>
+              <button class="chip" type="button" data-book-trope="chosen-one" aria-pressed="false">Chosen one</button>
+            </div>
+          </div>
+          <div class="energy-row"><label class="field-title" id="energyTitle" for="energy">Energy level</label><span class="energy-value" id="energyValue">Low-key</span></div>
           <input id="energy" type="range" min="1" max="5" value="2" aria-label="Energy level">
-          <div class="energy-scale"><span>Slow Sunday</span><span>Dance floor</span></div>
+          <div class="energy-scale"><span id="energyLow">Slow Sunday</span><span id="energyHigh">Dance floor</span></div>
         </div>
         <div class="panel record-column">
-          <p class="panel-label" style="width:100%; align-self:stretch"><strong>02</strong> Drop the needle</p>
+          <p class="panel-label" id="centerPanelTitle" style="width:100%; align-self:stretch"><strong>02</strong> <span>Drop the needle</span></p>
           <div class="record" id="record" aria-hidden="true"><div class="record-label"><span>SIDE A</span><span>33⅓ RPM</span><i class="label-decoration" id="labelDecoration">✦</i></div></div>
           <p class="record-caption" id="recordCaption">Your next favorite is one spin away</p>
           <div class="label-customizer" aria-label="Customize your record label">
@@ -293,7 +339,7 @@
           <button class="spin-button" id="spinButton" type="button">Spin for a song <span class="arrow" aria-hidden="true">↗</span></button>
         </div>
         <div class="panel results">
-          <p class="panel-label"><strong>03</strong> On the turntable</p>
+          <p class="panel-label" id="resultsPanelTitle"><strong>03</strong> <span>On the turntable</span></p>
           <div class="results-head"><div><h2 id="resultHeading">A little listening mix</h2><p id="resultSubheading">Three tracks picked for your kind of day</p></div><span class="mix-count">SIDE A / 03</span></div>
           <div class="track-list" id="trackList" aria-live="polite"></div>
           <a class="listen-link" id="listenLink" href="https://open.spotify.com/search/indie%20easy" target="_blank" rel="noreferrer">Find this mix on Spotify <span aria-hidden="true">↗</span></a>
@@ -413,6 +459,28 @@
       { title: "The Ballad of Songbirds and Snakes", author: "Suzanne Collins", category: "Dystopian fiction", songGenres: ["country", "electronic"], moods: ["focused", "alive"], energy: 4, color: "#dbc28c" },
       { title: "The Fault in Our Stars", author: "John Green", category: "Contemporary romance", songGenres: ["indie", "folk"], moods: ["focused", "easy"], energy: 2, color: "#b9d1e2" }
     ];
+    const novelTags = {
+      "Heartstopper": { shelves: ["romance", "contemporary"], tropes: ["slow-burn", "coming-of-age"] },
+      "The Sun Is Also a Star": { shelves: ["romance", "contemporary"], tropes: ["slow-burn", "secrets"] },
+      "The Inheritance Games": { shelves: ["mystery"], tropes: ["secrets", "heist"] },
+      "A Good Girl's Guide to Murder": { shelves: ["mystery", "contemporary"], tropes: ["secrets", "coming-of-age"] },
+      "Legendborn": { shelves: ["fantasy", "adventure"], tropes: ["chosen-one", "secrets"] },
+      "Six of Crows": { shelves: ["fantasy", "adventure"], tropes: ["found-family", "heist"] },
+      "The Cruel Prince": { shelves: ["fantasy", "romance"], tropes: ["chosen-one", "slow-burn"] },
+      "The Hunger Games": { shelves: ["sci-fi", "adventure"], tropes: ["chosen-one", "secrets"] },
+      "Percy Jackson and the Lightning Thief": { shelves: ["fantasy", "adventure"], tropes: ["found-family", "chosen-one"] },
+      "The Poet X": { shelves: ["contemporary"], tropes: ["coming-of-age"] },
+      "The Summer I Turned Pretty": { shelves: ["romance", "contemporary"], tropes: ["slow-burn"] },
+      "One of Us Is Lying": { shelves: ["mystery", "contemporary"], tropes: ["secrets"] },
+      "Firekeeper's Daughter": { shelves: ["mystery", "contemporary"], tropes: ["secrets", "coming-of-age"] },
+      "They Both Die at the End": { shelves: ["sci-fi", "romance"], tropes: ["slow-burn", "coming-of-age"] },
+      "Cemetery Boys": { shelves: ["fantasy", "romance"], tropes: ["found-family", "slow-burn"] },
+      "Darius the Great Is Not Okay": { shelves: ["contemporary"], tropes: ["coming-of-age", "found-family"] },
+      "Cinder": { shelves: ["sci-fi", "fantasy"], tropes: ["chosen-one", "slow-burn"] },
+      "The Ballad of Songbirds and Snakes": { shelves: ["sci-fi", "adventure"], tropes: ["secrets", "chosen-one"] },
+      "The Fault in Our Stars": { shelves: ["romance", "contemporary"], tropes: ["coming-of-age", "slow-burn"] }
+    };
+    novels.forEach(novel => Object.assign(novel, novelTags[novel.title]));
     const fallbackImage = "photo-1516280440614-37939bbacd81";
     const state = {
       mood: "easy",
@@ -421,6 +489,8 @@
       current: [],
       mode: "songs",
       currentBooks: [],
+      bookGenres: new Set(JSON.parse(localStorage.getItem("side-a-book-genres") || "[]")),
+      bookTropes: new Set(JSON.parse(localStorage.getItem("side-a-book-tropes") || "[]")),
       saved: new Set(JSON.parse(localStorage.getItem("side-a-saved") || "[]")),
       savedBooks: new Set(JSON.parse(localStorage.getItem("side-a-saved-books") || "[]")),
       playlists: JSON.parse(localStorage.getItem("side-a-playlists") || "[]"),
@@ -470,6 +540,8 @@
         score: (novel.moods.includes(state.mood) ? 5 : 0)
           + novel.songGenres.filter(genre => favoriteGenres.has(genre)).length * 3
           + novel.moods.filter(mood => favoriteMoods.has(mood)).length * 2
+          + novel.shelves.filter(genre => state.bookGenres.has(genre)).length * 8
+          + novel.tropes.filter(trope => state.bookTropes.has(trope)).length * 6
           - Math.abs(novel.energy - state.energy)
       })).sort((a, b) => b.score - a.score || a.novel.title.localeCompare(b.novel.title))
         .slice(0, 3).map(item => item.novel);
@@ -786,6 +858,7 @@
       }
       function applyLabel() {
         document.querySelector(".record-label span:first-child").textContent = state.labelText || "SIDE A";
+        document.querySelector(".record-label span:nth-of-type(2)").textContent = state.mode === "novels" ? "A YA EDITION" : "33⅓ RPM";
         document.querySelector(".record-label").style.background = state.labelColor;
         const decoration = document.getElementById("labelDecoration");
         decoration.textContent = state.labelDecoration;
@@ -850,6 +923,7 @@
       state.mood = button.dataset.mood;
     }));
     document.querySelectorAll(".chip").forEach(button => button.addEventListener("click", () => {
+      if (!button.dataset.genre) return;
       const genre = button.dataset.genre;
       if (state.genres.has(genre)) {
         if (state.genres.size === 1) return showToast("Keep at least one shelf in the mix");
@@ -859,7 +933,9 @@
     }));
     document.getElementById("energy").addEventListener("input", event => {
       state.energy = Number(event.target.value);
-      document.getElementById("energyValue").textContent = ["Slow Sunday", "Low-key", "Mid-tempo", "Upbeat", "Full volume"][state.energy - 1];
+      document.getElementById("energyValue").textContent = (state.mode === "novels"
+        ? ["Meandering", "Gentle", "Steady", "Page-turner", "Can't put it down"]
+        : ["Slow Sunday", "Low-key", "Mid-tempo", "Upbeat", "Full volume"])[state.energy - 1];
     });
     document.getElementById("spinButton").addEventListener("click", spin);
     document.getElementById("savedLink").addEventListener("click", () => {
@@ -888,18 +964,50 @@
     document.querySelectorAll(".media-tab").forEach(button => button.addEventListener("click", () => {
       state.mode = button.dataset.mode;
       state.showingSaved = false;
+      document.body.classList.toggle("book-mode", state.mode === "novels");
       document.querySelectorAll(".media-tab").forEach(tab => tab.setAttribute("aria-selected", String(tab === button)));
+      document.getElementById("topNote").textContent = state.mode === "novels" ? "A quiet corner for your next read" : "A little more feeling in your listening";
       document.getElementById("pageTitle").innerHTML = state.mode === "novels" ? "Find your next<br>read." : "Find your next<br>favorite.";
+      document.getElementById("introEyebrow").textContent = state.mode === "novels" ? "The YA reading room" : "Your personal listening booth";
       document.querySelector(".intro-copy").textContent = state.mode === "novels"
         ? "Your mood and music favorites can point to your next young-adult read."
         : "Set the mood. Pick a sound. We’ll find the song that feels like it was waiting for you.";
+      document.getElementById("discoveryStudio").setAttribute("aria-label", state.mode === "novels" ? "Young adult novel discovery" : "Song discovery studio");
+      document.getElementById("tastePanelTitle").textContent = state.mode === "novels" ? "Your reading taste" : "Your taste";
       document.getElementById("songSearch").placeholder = state.mode === "novels" ? "Novel, author, or theme" : "Song, artist, or genre";
       document.getElementById("songSearch").setAttribute("aria-label", state.mode === "novels" ? "Search novels, authors, or themes" : "Search songs, artists, or genres");
       document.getElementById("genreTitle").textContent = state.mode === "novels" ? "Pick music genres you like" : "Pick your shelves";
+      document.getElementById("novelPreferences").hidden = state.mode !== "novels";
+      document.getElementById("energyTitle").textContent = state.mode === "novels" ? "Story pace" : "Energy level";
+      document.getElementById("energyLow").textContent = state.mode === "novels" ? "Quiet chapter" : "Slow Sunday";
+      document.getElementById("energyHigh").textContent = state.mode === "novels" ? "Page-turner" : "Dance floor";
+      document.getElementById("energyValue").textContent = (state.mode === "novels"
+        ? ["Meandering", "Gentle", "Steady", "Page-turner", "Can't put it down"]
+        : ["Slow Sunday", "Low-key", "Mid-tempo", "Upbeat", "Full volume"])[state.energy - 1];
+      document.querySelector("#centerPanelTitle span").textContent = state.mode === "novels" ? "Open the cover" : "Drop the needle";
+      document.querySelector("#resultsPanelTitle span").textContent = state.mode === "novels" ? "On the bookstand" : "On the turntable";
+      document.querySelector(".label-customizer").setAttribute("aria-label", state.mode === "novels" ? "Customize book cover" : "Customize your record label");
+      document.getElementById("labelText").setAttribute("aria-label", state.mode === "novels" ? "Book cover text" : "Record label text");
+      document.querySelectorAll("[data-book-genre]").forEach(chip => chip.setAttribute("aria-pressed", String(state.bookGenres.has(chip.dataset.bookGenre))));
+      document.querySelectorAll("[data-book-trope]").forEach(chip => chip.setAttribute("aria-pressed", String(state.bookTropes.has(chip.dataset.bookTrope))));
       updateSavedCount();
+      applyLabel();
       spin();
       renderSearchResults(document.getElementById("songSearch").value);
     }));
+    document.querySelectorAll("[data-book-genre], [data-book-trope]").forEach(button => {
+      const isGenre = Boolean(button.dataset.bookGenre);
+      const preferenceSet = isGenre ? state.bookGenres : state.bookTropes;
+      const key = isGenre ? button.dataset.bookGenre : button.dataset.bookTrope;
+      button.setAttribute("aria-pressed", String(preferenceSet.has(key)));
+      button.addEventListener("click", () => {
+        if (preferenceSet.has(key)) preferenceSet.delete(key);
+        else preferenceSet.add(key);
+        button.setAttribute("aria-pressed", String(preferenceSet.has(key)));
+        localStorage.setItem(isGenre ? "side-a-book-genres" : "side-a-book-tropes", JSON.stringify([...preferenceSet]));
+        if (state.mode === "novels") spin();
+      });
+    });
     document.getElementById("labelText").value = state.labelText;
     applyLabel();
     document.querySelectorAll(".swatch").forEach(button => {
