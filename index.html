@@ -253,7 +253,7 @@
             <button class="mood" type="button" data-mood="focused" aria-pressed="false"><i>◉</i>Focused</button>
             <button class="mood" type="button" data-mood="alive" aria-pressed="false"><i>✳</i>Alive</button>
           </div>
-          <p class="field-title">Pick your shelves</p>
+          <p class="field-title" id="genreTitle">Pick your shelves</p>
           <div class="genre-list" role="group" aria-label="Choose genres">
             <button class="chip" type="button" data-genre="indie" aria-pressed="true">Indie</button>
             <button class="chip" type="button" data-genre="soul" aria-pressed="false">Soul</button>
@@ -894,6 +894,8 @@
         ? "Your mood and music favorites can point to your next young-adult read."
         : "Set the mood. Pick a sound. We’ll find the song that feels like it was waiting for you.";
       document.getElementById("songSearch").placeholder = state.mode === "novels" ? "Novel, author, or theme" : "Song, artist, or genre";
+      document.getElementById("songSearch").setAttribute("aria-label", state.mode === "novels" ? "Search novels, authors, or themes" : "Search songs, artists, or genres");
+      document.getElementById("genreTitle").textContent = state.mode === "novels" ? "Pick music genres you like" : "Pick your shelves";
       updateSavedCount();
       spin();
       renderSearchResults(document.getElementById("songSearch").value);
