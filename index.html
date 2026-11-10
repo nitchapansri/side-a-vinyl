@@ -52,6 +52,9 @@
     .eyebrow { font: 11px var(--mono); color: var(--tomato); text-transform: uppercase; letter-spacing: 0; margin: 0 0 11px; }
     h1 { font: 700 clamp(38px, 5vw, 58px)/1.02 var(--serif); letter-spacing: 0; margin: 0; }
     .intro-copy { color: var(--muted); font-size: 14px; line-height: 1.55; max-width: 260px; margin: 0 2px 3px 0; }
+    .media-switch { display: inline-flex; gap: 3px; border: 1px solid var(--line); padding: 3px; margin: 0 0 18px; background: var(--white); }
+    .media-tab { border: 0; background: transparent; padding: 9px 13px; font-size: 11px; font-weight: 700; cursor: pointer; }
+    .media-tab[aria-selected="true"] { background: var(--ink); color: var(--white); }
     .studio {
       display: grid;
       grid-template-columns: minmax(270px, .92fr) minmax(290px, 1fr) minmax(300px, 1.08fr);
@@ -135,6 +138,8 @@
     .track-title { font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 0 0 4px; }
     .track-artist { font-size: 10px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 0; }
     .track-meta { font: 9px var(--mono); color: var(--tomato); margin-top: 6px; }
+    .book-result { grid-template-columns: 55px minmax(0, 1fr) 32px; }
+    .book-cover { width: 55px; height: 55px; display: grid; place-items: center; color: var(--ink); font: 700 17px var(--serif); border: 1px solid #00000012; }
     .save-button { background: none; border: 0; cursor: pointer; font-size: 19px; line-height: 1; padding: 5px; color: #9ba198; }
     .save-button.saved { color: var(--tomato); }
     .listen-link { display: block; text-align: center; margin-top: 13px; color: var(--ink); font-size: 11px; font-weight: 700; text-decoration: none; padding: 10px; border: 1px solid var(--line); transition: background .18s ease; }
@@ -235,6 +240,10 @@
         <div><p class="eyebrow">Your personal listening booth</p><h1 id="pageTitle">Find your next<br>favorite.</h1></div>
         <p class="intro-copy">Set the mood. Pick a sound. We’ll find the song that feels like it was waiting for you.</p>
       </section>
+      <div class="media-switch" role="tablist" aria-label="Choose what to discover">
+        <button class="media-tab" id="songsTab" type="button" role="tab" aria-selected="true" data-mode="songs">Songs</button>
+        <button class="media-tab" id="novelsTab" type="button" role="tab" aria-selected="false" data-mode="novels">YA novels</button>
+      </div>
       <section class="studio" aria-label="Song discovery studio">
         <div class="panel preferences">
           <p class="panel-label"><strong>01</strong> Your taste</p>
@@ -383,13 +392,37 @@
       { title: "Savage", artist: "Megan Thee Stallion", genre: "hip-hop", moods: ["alive", "focused"], energy: 5, image: "photo-1514525253161-7a46d19cd819", note: "viral dance hit · 2020" },
       { title: "Say So", artist: "Doja Cat", genre: "pop", moods: ["alive", "easy"], energy: 4, image: "photo-1508700115892-45ecd05ae2ad", note: "TikTok dance · 2020" }
     ];
+    const novels = [
+      { title: "Heartstopper", author: "Alice Oseman", category: "Contemporary romance", songGenres: ["indie", "pop"], moods: ["easy", "alive"], energy: 2, color: "#c6e4d2" },
+      { title: "The Sun Is Also a Star", author: "Nicola Yoon", category: "Contemporary romance", songGenres: ["soul", "pop"], moods: ["easy", "focused"], energy: 2, color: "#f4d28c" },
+      { title: "The Inheritance Games", author: "Jennifer Lynn Barnes", category: "Mystery", songGenres: ["electronic", "pop"], moods: ["focused", "alive"], energy: 3, color: "#d9c6a5" },
+      { title: "A Good Girl's Guide to Murder", author: "Holly Jackson", category: "Mystery thriller", songGenres: ["hip-hop", "electronic"], moods: ["focused", "alive"], energy: 4, color: "#d4d7b4" },
+      { title: "Legendborn", author: "Tracy Deonn", category: "Fantasy", songGenres: ["soul", "hip-hop"], moods: ["alive", "focused"], energy: 4, color: "#b6c7d8" },
+      { title: "Six of Crows", author: "Leigh Bardugo", category: "Fantasy heist", songGenres: ["electronic", "hip-hop"], moods: ["focused", "alive"], energy: 4, color: "#c5c6bf" },
+      { title: "The Cruel Prince", author: "Holly Black", category: "Fantasy", songGenres: ["indie", "electronic"], moods: ["focused", "alive"], energy: 3, color: "#c3d0be" },
+      { title: "The Hunger Games", author: "Suzanne Collins", category: "Dystopian adventure", songGenres: ["pop", "electronic"], moods: ["alive", "focused"], energy: 5, color: "#e0b48d" },
+      { title: "Percy Jackson and the Lightning Thief", author: "Rick Riordan", category: "Mythic adventure", songGenres: ["pop", "hip-hop"], moods: ["alive", "easy"], energy: 4, color: "#a9d8e5" },
+      { title: "The Poet X", author: "Elizabeth Acevedo", category: "Verse novel", songGenres: ["hip-hop", "soul"], moods: ["focused", "alive"], energy: 3, color: "#e4b7a3" },
+      { title: "The Summer I Turned Pretty", author: "Jenny Han", category: "Summer romance", songGenres: ["pop", "indie"], moods: ["easy", "alive"], energy: 3, color: "#f1cb9c" },
+      { title: "One of Us Is Lying", author: "Karen M. McManus", category: "Mystery", songGenres: ["pop", "electronic"], moods: ["focused", "alive"], energy: 4, color: "#bdc9cd" },
+      { title: "Firekeeper's Daughter", author: "Angeline Boulley", category: "Mystery thriller", songGenres: ["soul", "hip-hop"], moods: ["focused", "alive"], energy: 4, color: "#d29d7c" },
+      { title: "They Both Die at the End", author: "Adam Silvera", category: "Speculative fiction", songGenres: ["indie", "soul"], moods: ["focused", "easy"], energy: 2, color: "#b8c8d8" },
+      { title: "Cemetery Boys", author: "Aiden Thomas", category: "Fantasy romance", songGenres: ["pop", "indie"], moods: ["easy", "alive"], energy: 3, color: "#c4b8d1" },
+      { title: "Darius the Great Is Not Okay", author: "Adib Khorram", category: "Contemporary", songGenres: ["indie", "soul"], moods: ["focused", "easy"], energy: 2, color: "#c8d7bb" },
+      { title: "Cinder", author: "Marissa Meyer", category: "Science fiction", songGenres: ["electronic", "pop"], moods: ["focused", "alive"], energy: 3, color: "#b4d2d2" },
+      { title: "The Ballad of Songbirds and Snakes", author: "Suzanne Collins", category: "Dystopian fiction", songGenres: ["country", "electronic"], moods: ["focused", "alive"], energy: 4, color: "#dbc28c" },
+      { title: "The Fault in Our Stars", author: "John Green", category: "Contemporary romance", songGenres: ["indie", "folk"], moods: ["focused", "easy"], energy: 2, color: "#b9d1e2" }
+    ];
     const fallbackImage = "photo-1516280440614-37939bbacd81";
     const state = {
       mood: "easy",
       genres: new Set(["indie"]),
       energy: 2,
       current: [],
+      mode: "songs",
+      currentBooks: [],
       saved: new Set(JSON.parse(localStorage.getItem("side-a-saved") || "[]")),
+      savedBooks: new Set(JSON.parse(localStorage.getItem("side-a-saved-books") || "[]")),
       playlists: JSON.parse(localStorage.getItem("side-a-playlists") || "[]"),
       selectedPlaylistId: null,
       labelText: localStorage.getItem("side-a-label-text") || "SIDE A",
@@ -422,6 +455,72 @@
         if (!selected.some(song => song.title === item.song.title)) selected.push(item.song);
       }
       return selected;
+    }
+    function chooseNovels() {
+      const playlist = activePlaylist();
+      const favoriteSongs = [
+        ...(playlist ? playlist.tracks.map(title => songs.find(song => song.title === title)).filter(Boolean) : []),
+        ...songs.filter(song => state.saved.has(song.title))
+      ];
+      const fallbackSongs = favoriteSongs.length ? favoriteSongs : state.current;
+      const favoriteGenres = new Set([...state.genres, ...fallbackSongs.map(song => song.genre)]);
+      const favoriteMoods = new Set([state.mood, ...fallbackSongs.flatMap(song => song.moods)]);
+      return novels.map(novel => ({
+        novel,
+        score: (novel.moods.includes(state.mood) ? 5 : 0)
+          + novel.songGenres.filter(genre => favoriteGenres.has(genre)).length * 3
+          + novel.moods.filter(mood => favoriteMoods.has(mood)).length * 2
+          - Math.abs(novel.energy - state.energy)
+      })).sort((a, b) => b.score - a.score || a.novel.title.localeCompare(b.novel.title))
+        .slice(0, 3).map(item => item.novel);
+    }
+    function renderBooks(list) {
+      trackList.replaceChildren();
+      if (!list.length) {
+        const note = document.createElement("p");
+        note.className = "playlist-empty";
+        note.textContent = state.showingSaved ? "Your reading list is empty. Save a novel to keep it here." : "No novels found for this shelf.";
+        trackList.append(note);
+        return;
+      }
+      list.forEach(novel => {
+        const isSaved = state.savedBooks.has(novel.title);
+        const item = document.createElement("article");
+        item.className = "track book-result";
+        const cover = document.createElement("div");
+        cover.className = "book-cover";
+        cover.style.background = novel.color;
+        cover.textContent = novel.title.charAt(0);
+        const info = document.createElement("div");
+        info.className = "track-info";
+        const title = document.createElement("p");
+        title.className = "track-title";
+        title.textContent = novel.title;
+        const author = document.createElement("p");
+        author.className = "track-artist";
+        author.textContent = novel.author;
+        const meta = document.createElement("div");
+        meta.className = "track-meta";
+        meta.textContent = novel.category;
+        info.append(title, author, meta);
+        const save = document.createElement("button");
+        save.className = `save-button${isSaved ? " saved" : ""}`;
+        save.type = "button";
+        save.textContent = isSaved ? "♥" : "♡";
+        save.setAttribute("aria-label", `${isSaved ? "Remove" : "Save"} ${novel.title} to reading list`);
+        save.setAttribute("aria-pressed", String(isSaved));
+        save.addEventListener("click", () => toggleBookSaved(novel));
+        item.append(cover, info, save);
+        trackList.append(item);
+      });
+    }
+    function toggleBookSaved(novel) {
+      if (state.savedBooks.has(novel.title)) state.savedBooks.delete(novel.title);
+      else state.savedBooks.add(novel.title);
+      localStorage.setItem("side-a-saved-books", JSON.stringify([...state.savedBooks]));
+      updateSavedCount();
+      renderBooks(state.showingSaved ? novels.filter(item => state.savedBooks.has(item.title)) : state.currentBooks);
+      showToast(state.savedBooks.has(novel.title) ? "Added to your reading list" : "Removed from your reading list");
     }
     function renderTracks(list) {
       trackList.replaceChildren();
@@ -583,6 +682,36 @@
           results.append(note);
           return;
         }
+        if (state.mode === "novels") {
+          const matches = novels.filter(novel => `${novel.title} ${novel.author} ${novel.category} ${novel.songGenres.join(" ")}`.toLowerCase().includes(term));
+          if (!matches.length) {
+            const note = document.createElement("p");
+            note.className = "empty-note";
+            note.textContent = "No novels found. Try a title, author, theme, or music genre.";
+            results.append(note);
+            return;
+          }
+          matches.forEach(novel => {
+            const row = document.createElement("div");
+            row.className = "search-result";
+            const info = document.createElement("div");
+            info.className = "search-result-info";
+            const title = document.createElement("strong");
+            title.textContent = novel.title;
+            const author = document.createElement("span");
+            author.textContent = `${novel.author} · ${novel.category}`;
+            info.append(title, author);
+            const save = document.createElement("button");
+            save.className = "small-button";
+            save.type = "button";
+            save.textContent = state.savedBooks.has(novel.title) ? "Saved ♥" : "Save +";
+            save.setAttribute("aria-label", `Save ${novel.title} to reading list`);
+            save.addEventListener("click", () => toggleBookSaved(novel));
+            row.append(info, save);
+            results.append(row);
+          });
+          return;
+        }
         const matches = songs.filter(song => `${song.title} ${song.artist} ${song.genre} ${song.note}`.toLowerCase().includes(term));
         if (!matches.length) {
           const note = document.createElement("p");
@@ -663,7 +792,8 @@
         decoration.hidden = !state.labelDecoration;
       }
     function updateSavedCount() {
-      document.getElementById("savedCount").textContent = state.saved.size;
+      document.getElementById("savedLink").firstChild.textContent = state.mode === "novels" ? "Reading list " : "Saved tracks ";
+      document.getElementById("savedCount").textContent = state.mode === "novels" ? state.savedBooks.size : state.saved.size;
     }
     function toggleSaved(song) {
       if (state.saved.has(song.title)) state.saved.delete(song.title);
@@ -683,12 +813,31 @@
     }
     function spin() {
       state.showingSaved = false;
+      if (state.mode === "novels") {
+        state.currentBooks = chooseNovels();
+        renderBooks(state.currentBooks);
+        document.getElementById("resultHeading").textContent = "A shelf shaped by your taste";
+        document.getElementById("resultSubheading").textContent = "YA novels matched to your mood and music";
+        document.querySelector(".mix-count").textContent = `READ / ${String(state.currentBooks.length).padStart(2, "0")}`;
+        document.getElementById("recordCaption").textContent = "Your next read is ready";
+        document.getElementById("spinButton").firstChild.textContent = "Find a novel ";
+        document.getElementById("listenLink").firstChild.textContent = "Find these books online ";
+        const query = encodeURIComponent(state.currentBooks.map(novel => `${novel.title} ${novel.author}`).join(" "));
+        document.getElementById("listenLink").href = `https://www.google.com/search?tbm=bks&q=${query}`;
+        record.classList.remove("spinning");
+        void record.offsetWidth;
+        record.classList.add("spinning");
+        setTimeout(() => record.classList.remove("spinning"), 2900);
+        return;
+      }
       state.current = chooseSongs();
       renderTracks(state.current);
       document.getElementById("resultHeading").textContent = "A little listening mix";
       document.getElementById("resultSubheading").textContent = "Three tracks picked for your kind of day";
       document.querySelector(".mix-count").textContent = "SIDE A / 03";
       document.getElementById("recordCaption").textContent = "Your mix is ready to find";
+      document.getElementById("spinButton").firstChild.textContent = "Spin for a song ";
+      document.getElementById("listenLink").firstChild.textContent = "Find this mix on Spotify ";
       const query = encodeURIComponent(state.current.map(song => `${song.title} ${song.artist}`).join(" "));
       document.getElementById("listenLink").href = `https://open.spotify.com/search/${query}`;
       record.classList.remove("spinning");
@@ -715,6 +864,15 @@
     document.getElementById("spinButton").addEventListener("click", spin);
     document.getElementById("savedLink").addEventListener("click", () => {
       state.showingSaved = !state.showingSaved;
+      if (state.mode === "novels") {
+        if (state.showingSaved) {
+          document.getElementById("resultHeading").textContent = "Your reading list";
+          document.getElementById("resultSubheading").textContent = "YA novels you saved for later";
+          document.querySelector(".mix-count").textContent = `SAVED / ${String(state.savedBooks.size).padStart(2, "0")}`;
+          renderBooks(novels.filter(novel => state.savedBooks.has(novel.title)));
+        } else spin();
+        return;
+      }
       if (state.showingSaved) {
         document.getElementById("resultHeading").textContent = "Your saved crate";
         document.getElementById("resultSubheading").textContent = "The tracks you wanted to keep close";
@@ -727,6 +885,19 @@
         renderTracks(state.current);
       }
     });
+    document.querySelectorAll(".media-tab").forEach(button => button.addEventListener("click", () => {
+      state.mode = button.dataset.mode;
+      state.showingSaved = false;
+      document.querySelectorAll(".media-tab").forEach(tab => tab.setAttribute("aria-selected", String(tab === button)));
+      document.getElementById("pageTitle").innerHTML = state.mode === "novels" ? "Find your next<br>read." : "Find your next<br>favorite.";
+      document.querySelector(".intro-copy").textContent = state.mode === "novels"
+        ? "Your mood and music favorites can point to your next young-adult read."
+        : "Set the mood. Pick a sound. We’ll find the song that feels like it was waiting for you.";
+      document.getElementById("songSearch").placeholder = state.mode === "novels" ? "Novel, author, or theme" : "Song, artist, or genre";
+      updateSavedCount();
+      spin();
+      renderSearchResults(document.getElementById("songSearch").value);
+    }));
     document.getElementById("labelText").value = state.labelText;
     applyLabel();
     document.querySelectorAll(".swatch").forEach(button => {
@@ -803,15 +974,28 @@
       showToast(`A ${mood} ${genre} mix, coming up`);
     });
     document.getElementById("blindPick").addEventListener("click", () => {
-      const song = songs[Math.floor(Math.random() * songs.length)];
       state.showingSaved = false;
-      state.current = [song];
-      renderTracks(state.current);
       document.getElementById("resultHeading").textContent = "Blind pick";
-      document.getElementById("resultSubheading").textContent = "One track chosen just for the plot";
-      document.querySelector(".mix-count").textContent = "SIDE A / 01";
-      document.getElementById("recordCaption").textContent = "No skips until the first chorus";
-      document.getElementById("listenLink").href = `https://open.spotify.com/search/${encodeURIComponent(`${song.title} ${song.artist}`)}`;
+      if (state.mode === "novels") {
+        const picks = chooseNovels();
+        const novel = picks[Math.floor(Math.random() * picks.length)];
+        state.currentBooks = [novel];
+        renderBooks(state.currentBooks);
+        document.getElementById("resultSubheading").textContent = "One YA novel chosen just for the plot";
+        document.querySelector(".mix-count").textContent = "READ / 01";
+        document.getElementById("recordCaption").textContent = "Try the first chapter";
+        document.getElementById("listenLink").firstChild.textContent = "Find this novel online ";
+        document.getElementById("listenLink").href = `https://www.google.com/search?tbm=bks&q=${encodeURIComponent(`${novel.title} ${novel.author}`)}`;
+      } else {
+        const song = songs[Math.floor(Math.random() * songs.length)];
+        state.current = [song];
+        renderTracks(state.current);
+        document.getElementById("resultSubheading").textContent = "One track chosen just for the plot";
+        document.querySelector(".mix-count").textContent = "SIDE A / 01";
+        document.getElementById("recordCaption").textContent = "No skips until the first chorus";
+        document.getElementById("listenLink").firstChild.textContent = "Find this mix on Spotify ";
+        document.getElementById("listenLink").href = `https://open.spotify.com/search/${encodeURIComponent(`${song.title} ${song.artist}`)}`;
+      }
       record.classList.remove("spinning");
       void record.offsetWidth;
       record.classList.add("spinning");
