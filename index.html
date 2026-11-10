@@ -973,6 +973,7 @@
         const url = location.protocol === "file:"
           ? new URL("https://nitchapansri.github.io/side-a-vinyl/")
           : new URL(location.href);
+        url.search = "";
         url.hash = "";
         return url;
       }
