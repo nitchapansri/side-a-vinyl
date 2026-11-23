@@ -31,6 +31,7 @@
       font-family: var(--sans);
       min-height: 100vh;
     }
+    body.auth-open { overflow: hidden; }
     button, input { font: inherit; }
     button { color: inherit; }
     .page { width: min(1240px, calc(100% - 64px)); margin: 0 auto; }
@@ -45,8 +46,25 @@
     .brand-mark { width: 30px; height: 30px; border-radius: 50%; background: var(--ink); display: grid; place-items: center; }
     .brand-mark::after { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
     .top-note { font: 11px var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0; }
+    .top-actions { display: flex; align-items: center; gap: 10px; }
+    .language-select { width: auto; min-width: 88px; padding: 8px 10px; font-size: 11px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
     .top-link { background: transparent; border: 0; padding: 8px 0 8px 12px; cursor: pointer; font-size: 13px; font-weight: 600; }
     .top-link span { color: var(--tomato); margin-left: 5px; }
+    .top-link.sign-in {
+      background: var(--green);
+      border: 1px solid var(--ink);
+      border-radius: 999px;
+      padding: 9px 16px;
+      margin-left: 4px;
+      transition: transform .18s ease, box-shadow .18s ease;
+      box-shadow: 0 1px 0 rgba(23, 29, 25, 0.18);
+    }
+    .top-link.sign-in:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(23, 29, 25, 0.12); }
+    .top-link.sign-in:focus-visible, .top-link:focus-visible, .small-button:focus-visible, .chip:focus-visible, .mood:focus-visible, .primary-action:focus-visible, .secondary-action:focus-visible, .auth-close:focus-visible, .auth-form input:focus-visible {
+      outline: 2px solid var(--tomato);
+      outline-offset: 2px;
+    }
     main { padding: 52px 0 48px; }
     .intro { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 32px; }
     .eyebrow { font: 11px var(--mono); color: var(--tomato); text-transform: uppercase; letter-spacing: 0; margin: 0 0 11px; }
@@ -71,6 +89,9 @@
     body.book-mode .record-label span:first-child { margin: 0; max-width: 100%; padding: 6px; font: 700 14px/1.2 var(--serif); overflow-wrap: anywhere; }
     body.book-mode .record-label span:last-child { margin-top: 12px; font: 9px var(--mono); }
     body.book-mode .record-label .label-decoration { top: 8px; right: 8px; color: #f1d78f; }
+    body.book-mode .record-label.has-cover { background-size: cover; background-position: center; background-repeat: no-repeat; }
+    body.book-mode .record-label.has-cover > span,
+    body.book-mode .record-label.has-cover .label-decoration { display: none; }
     body.book-mode .record-caption { color: #53675b; }
     body.book-mode .spin-button { background: #d7b36b; color: #263b32; }
     body.book-mode .chip[aria-pressed="true"] { background: #456251; border-color: #456251; }
@@ -160,11 +181,27 @@
     @keyframes arrive { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
     .cover { width: 55px; height: 55px; object-fit: cover; background: var(--blue); }
     .track-info { min-width: 0; }
-    .track-title { font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 0 0 4px; }
+    .track-title { display: block; max-width: 100%; padding: 0; border: 0; background: transparent; color: var(--ink); text-align: left; font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 0 0 4px; cursor: pointer; }
+    .track-title:hover { text-decoration: underline; text-underline-offset: 2px; }
     .track-artist { font-size: 10px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 0; }
     .track-meta { font: 9px var(--mono); color: var(--tomato); margin-top: 6px; }
+    .novel-synopsis { margin: 7px 0 0; max-width: 520px; color: var(--muted); font-size: 10px; line-height: 1.45; }
+    .novel-song { display: inline-block; margin-top: 7px; color: var(--ink); font-size: 9px; font-weight: 700; text-decoration: none; }
+    .novel-song:hover { color: var(--tomato); text-decoration: underline; text-underline-offset: 2px; }
+    .preview-button { border: 0; background: transparent; color: var(--ink); padding: 5px 0 0; font-size: 10px; font-weight: 700; cursor: pointer; }
+    .preview-button:hover { color: var(--tomato); }
+    .preview-button:focus-visible { outline: 2px solid var(--tomato); outline-offset: 2px; }
+    .preview-player { margin-top: 12px; padding: 12px; border: 1px solid var(--line); background: var(--white); }
+    .preview-player[hidden] { display: none; }
+    .preview-player p { margin: 0 0 8px; font-size: 11px; font-weight: 700; }
+    .preview-player audio { display: block; width: 100%; height: 36px; }
+    .preview-note { margin: 7px 0 0 !important; color: var(--muted); font-size: 9px !important; font-weight: 400 !important; line-height: 1.4; }
     .book-result { grid-template-columns: 55px minmax(0, 1fr) 32px; }
-    .book-cover { width: 55px; height: 55px; display: grid; place-items: center; color: var(--ink); font: 700 17px var(--serif); border: 1px solid #00000012; }
+    .book-cover { width: 55px; height: 82px; display: grid; place-items: center; color: var(--ink); font: 700 17px var(--serif); border: 1px solid #00000012; background-position: center; background-repeat: no-repeat; background-size: cover; overflow: hidden; }
+    .letter-item .book-cover { width: 40px; height: 60px; flex: 0 0 40px; font-size: 12px; }
+    .letter-item-copy { min-width: 0; flex: 1; }
+    .letter-paper-items li { display: flex; align-items: center; gap: 8px; }
+    .letter-paper-items .book-cover { width: 32px; height: 48px; flex: 0 0 32px; font-size: 9px; }
     .novel-only[hidden] { display: none; }
     .novel-preferences { padding: 14px 12px 2px; margin: -5px 0 21px; border-left: 2px solid #a64e5b; background: #f3f4ea; }
     .novel-preferences .field-title { margin-bottom: 9px; }
@@ -256,6 +293,7 @@
     .search-result-info strong, .search-result-info span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .search-result-info strong { font-size: 11px; }
     .search-result-info span { color: var(--muted); font-size: 10px; margin-top: 3px; }
+    .search-result-info .novel-synopsis { white-space: normal; line-height: 1.45; }
     .small-button { flex: 0 0 auto; border: 1px solid var(--line); background: transparent; padding: 7px 9px; font-size: 10px; font-weight: 700; cursor: pointer; }
     .small-button:hover { border-color: var(--ink); }
     .playlist-toolbar { display: flex; gap: 8px; align-items: center; margin-top: 12px; }
@@ -270,6 +308,118 @@
     .dialog p { color: var(--muted); font-size: 11px; line-height: 1.5; }
     .qr-image { display: block; width: 220px; height: 220px; margin: 16px auto; background: white; image-rendering: pixelated; }
     .dialog-actions { display: flex; justify-content: center; gap: 8px; }
+    .auth-overlay {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background: rgba(23, 29, 25, 0.56);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .2s ease, visibility .2s ease;
+      z-index: 20;
+    }
+    .auth-overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+    .auth-modal {
+      width: min(420px, calc(100% - 28px));
+      background: var(--white);
+      border: 1px solid var(--ink);
+      padding: 22px 22px 18px;
+      position: relative;
+      box-shadow: 0 16px 34px rgba(23, 29, 25, 0.18);
+    }
+    .auth-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      border: 0;
+      background: transparent;
+      font-size: 26px;
+      line-height: 1;
+      cursor: pointer;
+      color: var(--ink);
+    }
+    .auth-kicker {
+      margin: 0 0 8px;
+      color: var(--tomato);
+      font: 10px var(--mono);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .auth-modal h2 {
+      margin: 0;
+      font: 700 clamp(30px, 4vw, 42px)/1 var(--serif);
+    }
+    .auth-copy {
+      margin: 10px 0 18px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .auth-form {
+      display: grid;
+      gap: 14px;
+    }
+    .auth-form label {
+      display: grid;
+      gap: 7px;
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .auth-form input {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: #f7f9f5;
+      padding: 13px 12px;
+      font: inherit;
+      color: var(--ink);
+    }
+    .auth-form input:focus { border-color: var(--ink); background: var(--white); }
+    .auth-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: -4px;
+      font-size: 11px;
+    }
+    .auth-row label {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+    .auth-row input {
+      width: auto;
+      accent-color: var(--tomato);
+    }
+    .auth-row a {
+      color: var(--ink);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .primary-action, .secondary-action {
+      border: 1px solid var(--ink);
+      border-radius: 999px;
+      padding: 12px 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .18s ease, background .18s ease;
+    }
+    .primary-action {
+      background: var(--ink);
+      color: var(--white);
+    }
+    .secondary-action {
+      background: transparent;
+      color: var(--ink);
+    }
+    .primary-action:hover, .secondary-action:hover { transform: translateY(-1px); }
     .footer { display: flex; justify-content: space-between; padding: 15px 0 0; color: var(--muted); font: 9px var(--mono); text-transform: uppercase; }
     .toast { position: fixed; bottom: 20px; left: 50%; transform: translate(-50%, 12px); opacity: 0; background: var(--ink); color: white; padding: 11px 16px; font-size: 12px; pointer-events: none; transition: .2s ease; z-index: 5; }
     .toast.show { transform: translate(-50%, 0); opacity: 1; }
@@ -284,6 +434,10 @@
       .page { width: min(calc(100% - 32px), 480px); }
       .topbar { height: 64px; }
       .top-note { display: none; }
+      .top-actions { gap: 4px; }
+      .language-select { min-width: 72px; padding: 7px 5px; }
+      .top-link { padding-left: 4px; font-size: 11px; }
+      .top-link.sign-in { padding: 8px 10px; }
       main { padding-top: 34px; }
       .intro { display: block; margin-bottom: 23px; }
       h1 { font-size: 43px; }
@@ -312,66 +466,76 @@
   <div class="page">
     <header class="topbar">
       <a class="brand" href="#" aria-label="Side A home"><span class="brand-mark" aria-hidden="true"></span>side a</a>
-      <span class="top-note" id="topNote">A little more feeling in your listening</span>
-      <button class="top-link" id="savedLink" type="button">Saved tracks <span id="savedCount">0</span></button>
+      <span class="top-note" id="topNote" data-i18n="topNote">A little more feeling in your listening</span>
+      <div class="top-actions">
+        <label class="sr-only" for="uiLanguage">Interface language</label>
+        <select class="text-input language-select" id="uiLanguage" aria-label="Interface language">
+          <option value="en">English</option>
+          <option value="th">ไทย</option>
+        </select>
+        <button class="top-link" id="savedLink" type="button"><span data-i18n="savedTracks">Saved tracks</span> <span id="savedCount">0</span></button>
+        <button class="top-link sign-in" id="signInButton" type="button" data-i18n="signIn">Sign in</button>
+      </div>
     </header>
     <main>
       <section class="intro" aria-labelledby="pageTitle">
-        <div><p class="eyebrow" id="introEyebrow">Your personal listening booth</p><h1 id="pageTitle">Find your next<br>favorite.</h1></div>
-        <p class="intro-copy">Set the mood. Pick a sound. We’ll find the song that feels like it was waiting for you.</p>
+        <div><p class="eyebrow" id="introEyebrow" data-i18n="introEyebrow">Your personal listening booth</p><h1 id="pageTitle"><span data-i18n="pageTitleLine1">Find your next</span><br><span data-i18n="pageTitleLine2">favorite.</span></h1></div>
+        <p class="intro-copy" data-i18n="introCopy">Set the mood. Pick a sound. We’ll find the song that feels like it was waiting for you.</p>
       </section>
-      <div class="media-switch" role="tablist" aria-label="Choose what to discover">
-        <button class="media-tab" id="songsTab" type="button" role="tab" aria-selected="true" data-mode="songs">Songs</button>
-        <button class="media-tab" id="novelsTab" type="button" role="tab" aria-selected="false" data-mode="novels">YA novels</button>
-        <button class="media-tab" id="letterTab" type="button" role="tab" aria-selected="false" data-mode="letter">Send a letter</button>
+      <div class="media-switch" role="tablist" aria-label="Choose what to discover" data-i18n-aria-label="discoverLabel">
+        <button class="media-tab" id="songsTab" type="button" role="tab" aria-selected="true" data-mode="songs" data-i18n="songsTab">Songs</button>
+        <button class="media-tab" id="novelsTab" type="button" role="tab" aria-selected="false" data-mode="novels" data-i18n="novelsTab">Novels</button>
+        <button class="media-tab" id="letterTab" type="button" role="tab" aria-selected="false" data-mode="letter" data-i18n="letterTab">Send a letter</button>
       </div>
       <section class="studio" id="discoveryStudio" aria-label="Song discovery studio">
         <div class="panel preferences">
-          <p class="panel-label"><strong>01</strong> <span id="tastePanelTitle">Your taste</span></p>
-          <p class="field-title">What are you in the mood for?</p>
+          <p class="panel-label"><strong>01</strong> <span id="tastePanelTitle" data-i18n="tastePanelTitle">Your taste</span></p>
+          <p class="field-title" data-i18n="moodPrompt">What are you in the mood for?</p>
           <div class="mood-list" role="group" aria-label="Choose a mood">
-            <button class="mood" type="button" data-mood="easy" aria-pressed="true"><i>☼</i>Easy</button>
-            <button class="mood" type="button" data-mood="focused" aria-pressed="false"><i>◉</i>Focused</button>
-            <button class="mood" type="button" data-mood="alive" aria-pressed="false"><i>✳</i>Alive</button>
+            <button class="mood" type="button" data-mood="easy" aria-pressed="true"><i>☼</i><span data-i18n="moodEasy">Easy</span></button>
+            <button class="mood" type="button" data-mood="focused" aria-pressed="false"><i>◉</i><span data-i18n="moodFocused">Focused</span></button>
+            <button class="mood" type="button" data-mood="alive" aria-pressed="false"><i>✳</i><span data-i18n="moodAlive">Alive</span></button>
           </div>
-          <p class="field-title" id="genreTitle">Pick your shelves</p>
+          <p class="field-title" id="genreTitle" data-i18n="genreTitle">Pick your shelves</p>
           <div class="genre-list" role="group" aria-label="Choose genres">
-            <button class="chip" type="button" data-genre="indie" aria-pressed="true">Indie</button>
-            <button class="chip" type="button" data-genre="soul" aria-pressed="false">Soul</button>
-            <button class="chip" type="button" data-genre="jazz" aria-pressed="false">Jazz</button>
-            <button class="chip" type="button" data-genre="electronic" aria-pressed="false">Electronic</button>
-            <button class="chip" type="button" data-genre="folk" aria-pressed="false">Folk</button>
-            <button class="chip" type="button" data-genre="pop" aria-pressed="false">Pop</button>
-            <button class="chip" type="button" data-genre="hip-hop" aria-pressed="false">Hip-hop</button>
-            <button class="chip" type="button" data-genre="r&b" aria-pressed="false">R&amp;B</button>
-            <button class="chip" type="button" data-genre="country" aria-pressed="false">Country</button>
-            <button class="chip" type="button" data-genre="k-pop" aria-pressed="false">K-pop</button>
+            <button class="chip" type="button" data-genre="indie" aria-pressed="true" data-i18n="genreIndie">Indie</button>
+            <button class="chip" type="button" data-genre="soul" aria-pressed="false" data-i18n="genreSoul">Soul</button>
+            <button class="chip" type="button" data-genre="jazz" aria-pressed="false" data-i18n="genreJazz">Jazz</button>
+            <button class="chip" type="button" data-genre="electronic" aria-pressed="false" data-i18n="genreElectronic">Electronic</button>
+            <button class="chip" type="button" data-genre="folk" aria-pressed="false" data-i18n="genreFolk">Folk</button>
+            <button class="chip" type="button" data-genre="pop" aria-pressed="false" data-i18n="genrePop">Pop</button>
+            <button class="chip" type="button" data-genre="hip-hop" aria-pressed="false" data-i18n="genreHipHop">Hip-hop</button>
+            <button class="chip" type="button" data-genre="r&b" aria-pressed="false" data-i18n="genreRnb">R&amp;B</button>
+            <button class="chip" type="button" data-genre="country" aria-pressed="false" data-i18n="genreCountry">Country</button>
+            <button class="chip" type="button" data-genre="k-pop" aria-pressed="false" data-i18n="genreKpop">K-pop</button>
+            <button class="chip" type="button" data-genre="t-pop" aria-pressed="false" data-i18n="genreTpop">T-pop</button>
           </div>
           <div class="novel-preferences novel-only" id="novelPreferences" hidden>
-            <p class="field-title">Choose a book shelf</p>
+            <p class="field-title" data-i18n="bookShelfLabel">Choose a book shelf</p>
             <div class="genre-list" role="group" aria-label="Choose novel genres">
-              <button class="chip" type="button" data-book-genre="romance" aria-pressed="false">Romance</button>
-              <button class="chip" type="button" data-book-genre="fantasy" aria-pressed="false">Fantasy</button>
-              <button class="chip" type="button" data-book-genre="mystery" aria-pressed="false">Mystery</button>
-              <button class="chip" type="button" data-book-genre="contemporary" aria-pressed="false">Contemporary</button>
-              <button class="chip" type="button" data-book-genre="sci-fi" aria-pressed="false">Sci-fi</button>
-              <button class="chip" type="button" data-book-genre="adventure" aria-pressed="false">Adventure</button>
+              <button class="chip" type="button" data-book-genre="romance" aria-pressed="false" data-i18n="bookGenreRomance">Romance</button>
+              <button class="chip" type="button" data-book-genre="fantasy" aria-pressed="false" data-i18n="bookGenreFantasy">Fantasy</button>
+              <button class="chip" type="button" data-book-genre="mystery" aria-pressed="false" data-i18n="bookGenreMystery">Mystery</button>
+              <button class="chip" type="button" data-book-genre="contemporary" aria-pressed="false" data-i18n="bookGenreContemporary">Contemporary</button>
+              <button class="chip" type="button" data-book-genre="sci-fi" aria-pressed="false" data-i18n="bookGenreSciFi">Sci-fi</button>
+              <button class="chip" type="button" data-book-genre="adventure" aria-pressed="false" data-i18n="bookGenreAdventure">Adventure</button>
+              <button class="chip" type="button" data-book-genre="boy-love" aria-pressed="false" data-i18n="bookGenreBoyLove">Boy love (BL)</button>
             </div>
-            <p class="field-title">Pick your story ingredients</p>
+            <p class="field-title" data-i18n="storyIngredients">Pick your story ingredients</p>
             <div class="genre-list" role="group" aria-label="Choose story tropes">
-              <button class="chip" type="button" data-book-trope="found-family" aria-pressed="false">Found family</button>
-              <button class="chip" type="button" data-book-trope="coming-of-age" aria-pressed="false">Coming of age</button>
-              <button class="chip" type="button" data-book-trope="slow-burn" aria-pressed="false">Slow burn</button>
-              <button class="chip" type="button" data-book-trope="secrets" aria-pressed="false">Secrets</button>
-              <button class="chip" type="button" data-book-trope="heist" aria-pressed="false">Heists</button>
-              <button class="chip" type="button" data-book-trope="chosen-one" aria-pressed="false">Chosen one</button>
+              <button class="chip" type="button" data-book-trope="found-family" aria-pressed="false" data-i18n="tropeFoundFamily">Found family</button>
+              <button class="chip" type="button" data-book-trope="coming-of-age" aria-pressed="false" data-i18n="tropeComingOfAge">Coming of age</button>
+              <button class="chip" type="button" data-book-trope="slow-burn" aria-pressed="false" data-i18n="tropeSlowBurn">Slow burn</button>
+              <button class="chip" type="button" data-book-trope="secrets" aria-pressed="false" data-i18n="tropeSecrets">Secrets</button>
+              <button class="chip" type="button" data-book-trope="heist" aria-pressed="false" data-i18n="tropeHeist">Heists</button>
+              <button class="chip" type="button" data-book-trope="chosen-one" aria-pressed="false" data-i18n="tropeChosenOne">Chosen one</button>
             </div>
           </div>
-          <div class="energy-row"><label class="field-title" id="energyTitle" for="energy">Energy level</label><span class="energy-value" id="energyValue">Low-key</span></div>
+          <div class="energy-row"><label class="field-title" id="energyTitle" for="energy" data-i18n="energyTitle">Energy level</label><span class="energy-value" id="energyValue">Low-key</span></div>
           <input id="energy" type="range" min="1" max="5" value="2" aria-label="Energy level">
           <div class="energy-scale"><span id="energyLow">Slow Sunday</span><span id="energyHigh">Dance floor</span></div>
           <div class="country-row">
-            <label class="field-title" for="recommendationCountry">Recommendation region</label>
+            <label class="field-title" for="recommendationCountry" data-i18n="regionTitle">Recommendation region</label>
             <select class="text-input" id="recommendationCountry" aria-label="Choose a country for recommendations">
               <option value="global">Global mix</option>
               <option value="us">United States</option>
@@ -380,14 +544,18 @@
               <option value="jp">Japan</option>
               <option value="in">India</option>
               <option value="br">Brazil</option>
+              <option value="th">Thailand</option>
+              <option value="cn">China</option>
+              <option value="tw">Taiwan</option>
+              <option value="es">Spain</option>
             </select>
-            <p class="country-note">Regional favorites are a guide; your mood and music taste still lead.</p>
+            <p class="country-note" data-i18n="countryNote">Regional favorites are a guide; your mood and music taste still lead.</p>
           </div>
         </div>
         <div class="panel record-column">
-          <p class="panel-label" id="centerPanelTitle" style="width:100%; align-self:stretch"><strong>02</strong> <span>Drop the needle</span></p>
+          <p class="panel-label" id="centerPanelTitle" style="width:100%; align-self:stretch"><strong>02</strong> <span data-i18n="centerPanelTitle">Drop the needle</span></p>
           <div class="record" id="record" aria-hidden="true"><div class="record-label"><span>SIDE A</span><span>33⅓ RPM</span><i class="label-decoration" id="labelDecoration">✦</i></div></div>
-          <p class="record-caption" id="recordCaption">Your next favorite is one spin away</p>
+          <p class="record-caption" id="recordCaption" data-i18n="recordCaption">Your next favorite is one spin away</p>
           <div class="label-customizer" aria-label="Customize your record label">
             <input id="labelText" type="text" maxlength="12" value="SIDE A" aria-label="Record label text">
             <div class="swatches" role="group" aria-label="Record label color">
@@ -404,45 +572,50 @@
               <button class="decoration-button" type="button" data-decoration="" aria-label="No decoration" title="No decoration">×</button>
             </div>
           </div>
-          <button class="spin-button" id="spinButton" type="button">Spin for a song <span class="arrow" aria-hidden="true">↗</span></button>
+          <button class="spin-button" id="spinButton" type="button"><span data-i18n="spinSong">Spin for a song</span> <span class="arrow" aria-hidden="true">↗</span></button>
         </div>
         <div class="panel results">
-          <p class="panel-label" id="resultsPanelTitle"><strong>03</strong> <span>On the turntable</span></p>
-          <div class="results-head"><div><h2 id="resultHeading">A little listening mix</h2><p id="resultSubheading">Three tracks picked for your kind of day</p></div><span class="mix-count">SIDE A / 03</span></div>
+          <p class="panel-label" id="resultsPanelTitle"><strong>03</strong> <span data-i18n="resultsPanelTitle">On the turntable</span></p>
+          <div class="results-head"><div><h2 id="resultHeading" data-i18n="resultHeading">A little listening mix</h2><p id="resultSubheading" data-i18n="resultSubheading">Three tracks picked for your kind of day</p></div><span class="mix-count">SIDE A / 03</span></div>
           <div class="track-list" id="trackList" aria-live="polite"></div>
+          <div class="preview-player" id="previewPlayer" hidden>
+            <p id="previewTitle">Song preview</p>
+            <audio id="songPreview" controls preload="none"></audio>
+            <p class="preview-note" data-i18n="previewNote">Short Apple Music preview; the hook segment can vary.</p>
+          </div>
           <a class="listen-link" id="listenLink" href="https://open.spotify.com/search/indie%20easy" target="_blank" rel="noreferrer">Find this mix on Spotify <span aria-hidden="true">↗</span></a>
         </div>
       </section>
       <section class="extras" aria-labelledby="activityTitle">
-        <div class="section-heading"><h2 id="activityTitle">Listening, your way</h2><p>A few little ways to find a new favorite.</p></div>
+        <div class="section-heading"><h2 id="activityTitle" data-i18n="activityTitle">Listening, your way</h2><p data-i18n="activityDescription">A few little ways to find a new favorite.</p></div>
         <div class="activity-grid">
-          <button class="activity" id="moodFlip" type="button"><strong>Flip the mood ↗</strong><span>Let the booth pick a new feeling and a fresh mix.</span></button>
-          <button class="activity" id="blindPick" type="button"><strong>Blind pick ↗</strong><span>One random track. No skips until the first chorus.</span></button>
-          <button class="activity" id="genreDive" type="button"><strong>Crate-digging prompt ↗</strong><span>Explore a shelf you have not been browsing.</span></button>
+          <button class="activity" id="moodFlip" type="button"><strong data-i18n="moodFlipTitle">Flip the mood ↗</strong><span data-i18n="moodFlipDescription">Let the booth pick a new feeling and a fresh mix.</span></button>
+          <button class="activity" id="blindPick" type="button"><strong data-i18n="blindPickTitle">Blind pick ↗</strong><span data-i18n="blindPickDescription">One random track. No skips until the first chorus.</span></button>
+          <button class="activity" id="genreDive" type="button"><strong data-i18n="genreDiveTitle">Crate-digging prompt ↗</strong><span data-i18n="genreDiveDescription">Explore a shelf you have not been browsing.</span></button>
         </div>
       </section>
-      <section class="library-grid" aria-label="Song search and playlists">
+      <section class="library-grid" aria-label="Song search and playlists" data-i18n-aria-label="libraryLabel">
         <section class="library-panel" aria-labelledby="searchTitle">
-          <p class="panel-label"><strong>04</strong> Search the shelves</p>
-          <h2 class="field-title" id="searchTitle">Looking for something specific?</h2>
+          <p class="panel-label"><strong>04</strong> <span data-i18n="searchPanelTitle">Search the shelves</span></p>
+          <h2 class="field-title" id="searchTitle" data-i18n="searchTitle">Looking for something specific?</h2>
           <form class="search-row" id="searchForm">
             <input class="text-input" id="songSearch" type="search" placeholder="Song, artist, or genre" aria-label="Search songs, artists, or genres">
-            <button class="action-button" type="submit">Search</button>
+            <button class="action-button" type="submit" data-i18n="searchButton">Search</button>
           </form>
-          <div class="search-results" id="searchResults" aria-live="polite"><p class="empty-note">Search the Side A song shelf to find a track.</p></div>
+          <div class="search-results" id="searchResults" aria-live="polite"><p class="empty-note" data-i18n="searchEmpty">Search the Side A song shelf to find a track.</p></div>
         </section>
         <section class="library-panel" aria-labelledby="playlistTitle">
-          <p class="panel-label"><strong>05</strong> Your mixtapes</p>
-          <h2 class="field-title" id="playlistTitle">Make a playlist for the moment</h2>
+          <p class="panel-label"><strong>05</strong> <span data-i18n="playlistPanelTitle">Your mixtapes</span></p>
+          <h2 class="field-title" id="playlistTitle" data-i18n="playlistTitle">Make a playlist for the moment</h2>
           <form class="playlist-form" id="playlistForm">
-            <input class="text-input" id="playlistName" type="text" maxlength="32" placeholder="Give your playlist a name" aria-label="New playlist name" required>
-            <button class="action-button" type="submit">Create</button>
+            <input class="text-input" id="playlistName" type="text" maxlength="32" placeholder="Give your playlist a name" aria-label="New playlist name" required data-i18n-placeholder="playlistPlaceholder" data-i18n-aria-label="playlistInputLabel">
+            <button class="action-button" type="submit" data-i18n="createButton">Create</button>
           </form>
           <div class="playlist-toolbar">
-            <select class="text-input" id="playlistSelect" aria-label="Choose a playlist" disabled><option value="">No playlists yet</option></select>
-            <button class="small-button" id="sharePlaylist" type="button" disabled>Share QR</button>
+            <select class="text-input" id="playlistSelect" aria-label="Choose a playlist" disabled data-i18n-aria-label="playlistSelectLabel"><option value="">No playlists yet</option></select>
+            <button class="small-button" id="sharePlaylist" type="button" disabled data-i18n="shareQr">Share QR</button>
           </div>
-          <div id="playlistContent" aria-live="polite"><p class="playlist-empty">Create a playlist, then add tracks from search or your current mix.</p></div>
+          <div id="playlistContent" aria-live="polite"><p class="playlist-empty" data-i18n="playlistEmpty">Create a playlist, then add tracks from search or your current mix.</p></div>
           <div id="similarTracks" aria-live="polite"></div>
         </section>
       </section>
@@ -460,7 +633,7 @@
               <p class="letter-control-label">Add something to your letter</p>
               <div class="letter-picker-tabs" role="group" aria-label="Choose songs or books">
                 <button class="letter-choice-tab" type="button" data-letter-type="songs" aria-pressed="true">Songs</button>
-                <button class="letter-choice-tab" type="button" data-letter-type="novels" aria-pressed="false">YA novels</button>
+                <button class="letter-choice-tab" type="button" data-letter-type="novels" aria-pressed="false" data-i18n="novelsTab">Novels</button>
               </div>
               <input class="text-input" id="letterItemSearch" type="search" placeholder="Search the shelves" aria-label="Search songs or books to include">
               <div class="letter-catalog" id="letterCatalog" aria-live="polite"></div>
@@ -507,7 +680,7 @@
           </div>
         </div>
       </section>
-      <footer class="footer"><span>Made for the long way home</span><span>Keep the needle moving</span></footer>
+      <footer class="footer"><span data-i18n="footerLeft">Made for the long way home</span><span data-i18n="footerRight">Keep the needle moving</span></footer>
     </main>
   </div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -521,7 +694,351 @@
       <button class="small-button" id="closeShareDialog" type="button">Done</button>
     </div>
   </dialog>
+
+  <div class="auth-overlay" id="authOverlay" aria-hidden="true">
+    <div class="auth-modal" role="dialog" aria-modal="true" aria-labelledby="signInTitle">
+      <button class="auth-close" id="authClose" type="button" aria-label="Close sign in">×</button>
+      <p class="auth-kicker">Welcome back</p>
+      <h2 id="signInTitle">Sign in</h2>
+      <p class="auth-copy">Pick up where you left off with your saved tracks and listening notes.</p>
+      <form class="auth-form" id="authForm">
+        <label>
+          Email
+          <input type="email" name="email" placeholder="you@example.com" aria-label="Email address" required>
+        </label>
+        <label>
+          Password
+          <input type="password" name="password" placeholder="••••••••" aria-label="Password" required>
+        </label>
+        <div class="auth-row">
+          <label><input type="checkbox" name="remember" checked>Remember me</label>
+          <a href="#" aria-label="Reset password">Forgot?</a>
+        </div>
+        <button class="primary-action" type="submit">Continue</button>
+        <button class="secondary-action" type="button" id="createAccountButton">Create account</button>
+      </form>
+    </div>
+  </div>
+
   <script>
+    const signInButton = document.getElementById('signInButton');
+    const authOverlay = document.getElementById('authOverlay');
+    const authClose = document.getElementById('authClose');
+    const authForm = document.getElementById('authForm');
+    const createAccountButton = document.getElementById('createAccountButton');
+    const languageSelect = document.getElementById("uiLanguage");
+    let uiLanguage = localStorage.getItem("side-a-language") === "th" ? "th" : "en";
+    const translations = {
+      en: {
+        languageLabel: "Interface language",
+        discoverLabel: "Choose what to discover",
+        topNote: "A little more feeling in your listening",
+        savedTracks: "Saved tracks",
+        readingList: "Reading list",
+        signIn: "Sign in",
+        introEyebrow: "Your personal listening booth",
+        pageTitleLine1: "Find your next",
+        pageTitleLine2: "favorite.",
+        introCopy: "Set the mood. Pick a sound. We’ll find the song that feels like it was waiting for you.",
+        songsTab: "Songs",
+        novelsTab: "Novels",
+        letterTab: "Send a letter",
+        tastePanelTitle: "Your taste",
+        moodPrompt: "What are you in the mood for?",
+        moodEasy: "Easy",
+        moodFocused: "Focused",
+        moodAlive: "Alive",
+        genreIndie: "Indie",
+        genreSoul: "Soul",
+        genreJazz: "Jazz",
+        genreElectronic: "Electronic",
+        genreFolk: "Folk",
+        genrePop: "Pop",
+        genreHipHop: "Hip-hop",
+        genreRnb: "R&B",
+        genreCountry: "Country",
+        genreKpop: "K-pop",
+        genreTpop: "T-pop",
+        genreTitle: "Pick your shelves",
+        energyTitle: "Energy level",
+        energyLow: "Slow Sunday",
+        energyHigh: "Dance floor",
+        regionTitle: "Recommendation region",
+        countryNote: "Regional favorites are a guide; your mood and music taste still lead.",
+        centerPanelTitle: "Drop the needle",
+        recordCaption: "Your next favorite is one spin away",
+        spinSong: "Spin for a song",
+        resultsPanelTitle: "On the turntable",
+        resultHeading: "A little listening mix",
+        resultSubheading: "Three tracks picked for your kind of day",
+        previewNote: "Short Apple Music preview; the hook segment can vary.",
+        searchPanelTitle: "Search the shelves",
+        searchTitle: "Looking for something specific?",
+        searchButton: "Search",
+        playlistPanelTitle: "Your mixtapes",
+        playlistTitle: "Make a playlist for the moment",
+        playlistPlaceholder: "Give your playlist a name",
+        playlistInputLabel: "New playlist name",
+        createButton: "Create",
+        playHook: "▶ Play hook preview",
+        playHookAria: "Play the hook preview for",
+        previewFinding: "Finding a hook preview for",
+        previewReady: "Preview ready — press play to listen",
+        previewUnavailable: "No preview clip is available for",
+        previewError: "Could not load a preview right now. Please try again.",
+        letterTopNote: "A little note, made just for them",
+        letterTitle: "Send a little<br>letter.",
+        letterEyebrow: "A note worth sending",
+        letterCopy: "Pair a few words with a song or book and send it their way.",
+        letterDescription: "Write a note, tuck in a song or book, and make a link just for them.",
+        receivedLetterDescription: "Someone sent a little note your way.",
+        novelTopNote: "A quiet corner for your next read",
+        novelTitle: "Find your next<br>read.",
+        novelEyebrow: "The reading room",
+        novelCopy: "Your mood and music favorites can point to your next great read.",
+        readingTaste: "Your reading taste",
+        novelGenres: "Pick music genres you like",
+        bookShelfLabel: "Choose a book shelf",
+        storyIngredients: "Pick your story ingredients",
+        bookGenreRomance: "Romance",
+        bookGenreFantasy: "Fantasy",
+        bookGenreMystery: "Mystery",
+        bookGenreContemporary: "Contemporary",
+        bookGenreSciFi: "Sci-fi",
+        bookGenreAdventure: "Adventure",
+        bookGenreBoyLove: "Boy love (BL)",
+        tropeFoundFamily: "Found family",
+        tropeComingOfAge: "Coming of age",
+        tropeSlowBurn: "Slow burn",
+        tropeSecrets: "Secrets",
+        tropeHeist: "Heists",
+        tropeChosenOne: "Chosen one",
+        storyPace: "Story pace",
+        quietChapter: "Quiet chapter",
+        pageTurner: "Page-turner",
+        findNovel: "Find a novel",
+        openCover: "Open the cover",
+        onBookstand: "On the bookstand",
+        novelResults: "A shelf shaped by your taste",
+        novelSubheading: "Novels matched to your mood and music",
+        novelSearchPlaceholder: "Novel, author, or theme",
+        novelSearchAria: "Search novels, authors, or themes",
+        songSearchPlaceholder: "Song, artist, or genre",
+        songSearchAria: "Search songs, artists, or genres",
+        activityTitle: "Listening, your way",
+        activityDescription: "A few little ways to find a new favorite.",
+        moodFlipTitle: "Flip the mood ↗",
+        moodFlipDescription: "Let the booth pick a new feeling and a fresh mix.",
+        blindPickTitle: "Blind pick ↗",
+        blindPickDescription: "One random track. No skips until the first chorus.",
+        genreDiveTitle: "Crate-digging prompt ↗",
+        genreDiveDescription: "Explore a shelf you have not been browsing.",
+        libraryLabel: "Song search and playlists",
+        searchEmpty: "Search the Side A song shelf to find a track.",
+        noNovelResults: "No novels found. Try a title, author, theme, or music genre.",
+        noSongResults: "No records found. Try another title, artist, or genre.",
+        noSavedTracks: "No saved records yet. Tap the heart on a track to keep it close.",
+        playlistSelectLabel: "Choose a playlist",
+        shareQr: "Share QR",
+        playlistEmpty: "Create a playlist, then add tracks from search or your current mix.",
+        footerLeft: "Made for the long way home",
+        footerRight: "Keep the needle moving",
+        novelReady: "Your next read is ready",
+        savedNovelsDescription: "Novels you saved for later",
+        mixReady: "Your mix is ready to find",
+        findBooks: "Find these books online",
+        findMix: "Find this mix on Spotify"
+      },
+      th: {
+        languageLabel: "ภาษาของแอป",
+        discoverLabel: "เลือกสิ่งที่ต้องการค้นหา",
+        topNote: "เติมความรู้สึกดี ๆ ให้ทุกการฟัง",
+        savedTracks: "เพลงที่บันทึก",
+        readingList: "รายการหนังสือ",
+        signIn: "เข้าสู่ระบบ",
+        introEyebrow: "มุมฟังเพลงส่วนตัว",
+        pageTitleLine1: "ค้นหาเพลงโปรด",
+        pageTitleLine2: "เพลงถัดไปของคุณ",
+        introCopy: "เลือกอารมณ์ เลือกเสียง แล้วเราจะหาเพลงที่ใช่สำหรับคุณ",
+        songsTab: "เพลง",
+        novelsTab: "นิยาย",
+        letterTab: "ส่งจดหมาย",
+        tastePanelTitle: "รสนิยมของคุณ",
+        moodPrompt: "วันนี้อยากฟังเพลงแบบไหน?",
+        moodEasy: "สบาย ๆ",
+        moodFocused: "มีสมาธิ",
+        moodAlive: "สดใส",
+        genreIndie: "อินดี้",
+        genreSoul: "โซล",
+        genreJazz: "แจ๊ส",
+        genreElectronic: "อิเล็กทรอนิกส์",
+        genreFolk: "โฟล์ก",
+        genrePop: "ป๊อป",
+        genreHipHop: "ฮิปฮอป",
+        genreRnb: "อาร์แอนด์บี",
+        genreCountry: "คันทรี",
+        genreKpop: "เคป๊อป",
+        genreTpop: "ทีป๊อป",
+        genreTitle: "เลือกแนวเพลง",
+        energyTitle: "ระดับพลัง",
+        energyLow: "วันอาทิตย์สบาย ๆ",
+        energyHigh: "ฟลอร์เต้นรำ",
+        regionTitle: "ภูมิภาคแนะนำเพลง",
+        countryNote: "เพลงประจำภูมิภาคเป็นเพียงแนวทาง อารมณ์และรสนิยมของคุณสำคัญที่สุด",
+        centerPanelTitle: "เปิดแผ่นเสียง",
+        recordCaption: "เพลงโปรดเพลงถัดไปรออยู่แค่หมุนแผ่น",
+        spinSong: "สุ่มเพลง",
+        resultsPanelTitle: "เพลงที่เลือก",
+        resultHeading: "มิกซ์เพลงสำหรับคุณ",
+        resultSubheading: "สามเพลงที่เลือกให้เข้ากับวันนี้ของคุณ",
+        previewNote: "ตัวอย่างเพลงสั้นจาก Apple Music ช่วงท่อนฮุกอาจแตกต่างกัน",
+        searchPanelTitle: "ค้นหาเพลง",
+        searchTitle: "กำลังหาเพลงที่ต้องการอยู่หรือเปล่า?",
+        searchButton: "ค้นหา",
+        playlistPanelTitle: "มิกซ์เทปของคุณ",
+        playlistTitle: "สร้างเพลย์ลิสต์ให้ช่วงเวลานี้",
+        playlistPlaceholder: "ตั้งชื่อเพลย์ลิสต์",
+        playlistInputLabel: "ชื่อเพลย์ลิสต์ใหม่",
+        createButton: "สร้าง",
+        playHook: "▶ ฟังท่อนฮุก",
+        playHookAria: "ฟังตัวอย่างท่อนฮุกของ",
+        previewFinding: "กำลังค้นหาตัวอย่างท่อนฮุกของ",
+        previewReady: "ตัวอย่างพร้อมแล้ว — กดเล่นเพื่อฟัง",
+        previewUnavailable: "ไม่มีคลิปตัวอย่างสำหรับ",
+        previewError: "โหลดตัวอย่างเพลงไม่ได้ในตอนนี้ กรุณาลองอีกครั้ง",
+        letterTopNote: "ส่งข้อความเล็ก ๆ ให้คนพิเศษ",
+        letterTitle: "ส่งจดหมาย<br>แทนความรู้สึก",
+        letterEyebrow: "จดหมายที่อยากส่ง",
+        letterCopy: "เขียนข้อความสั้น ๆ แนบเพลงหรือหนังสือ แล้วส่งให้คนพิเศษ",
+        letterDescription: "เขียนข้อความ แนบเพลงหรือหนังสือ แล้วสร้างลิงก์ส่งให้คนพิเศษ",
+        receivedLetterDescription: "มีคนส่งข้อความเล็ก ๆ มาให้คุณ",
+        novelTopNote: "มุมสงบสำหรับหนังสือเล่มถัดไป",
+        novelTitle: "ค้นหาเรื่องอ่าน<br>เล่มถัดไป",
+        novelEyebrow: "มุมอ่านนิยาย",
+        novelCopy: "อารมณ์และเพลงโปรดของคุณอาจพาไปพบกับเรื่องอ่านเล่มถัดไป",
+        readingTaste: "รสนิยมการอ่าน",
+        novelGenres: "เลือกแนวเพลงที่ชอบ",
+        bookShelfLabel: "เลือกชั้นหนังสือ",
+        storyIngredients: "เลือกองค์ประกอบของเรื่อง",
+        bookGenreRomance: "โรแมนซ์",
+        bookGenreFantasy: "แฟนตาซี",
+        bookGenreMystery: "สืบสวน",
+        bookGenreContemporary: "ร่วมสมัย",
+        bookGenreSciFi: "ไซไฟ",
+        bookGenreAdventure: "ผจญภัย",
+        bookGenreBoyLove: "นิยายวาย (BL)",
+        tropeFoundFamily: "ครอบครัวที่เลือกเอง",
+        tropeComingOfAge: "เติบโตและก้าวผ่านวัย",
+        tropeSlowBurn: "รักค่อยเป็นค่อยไป",
+        tropeSecrets: "ความลับ",
+        tropeHeist: "การโจรกรรม",
+        tropeChosenOne: "ผู้ถูกเลือก",
+        storyPace: "จังหวะของเรื่อง",
+        quietChapter: "บทที่เรื่อย ๆ",
+        pageTurner: "อ่านวางไม่ลง",
+        findNovel: "ค้นหาหนังสือ",
+        openCover: "เปิดปกหนังสือ",
+        onBookstand: "บนชั้นหนังสือ",
+        novelResults: "หนังสือที่เข้ากับคุณ",
+        novelSubheading: "นิยายที่เข้ากับอารมณ์และเพลงที่ชอบ",
+        novelSearchPlaceholder: "ชื่อเรื่อง ผู้เขียน หรือธีม",
+        novelSearchAria: "ค้นหานิยาย ผู้เขียน หรือธีม",
+        songSearchPlaceholder: "เพลง ศิลปิน หรือแนวเพลง",
+        songSearchAria: "ค้นหาเพลง ศิลปิน หรือแนวเพลง",
+        activityTitle: "ค้นหาเพลงในแบบของคุณ",
+        activityDescription: "อีกหลายวิธีเล็ก ๆ ในการค้นพบเพลงโปรดเพลงใหม่",
+        moodFlipTitle: "เปลี่ยนอารมณ์ ↗",
+        moodFlipDescription: "ให้บูธเลือกอารมณ์ใหม่และมิกซ์เพลงชุดใหม่",
+        blindPickTitle: "สุ่มเลือก ↗",
+        blindPickDescription: "สุ่มหนึ่งเพลง ห้ามข้ามจนกว่าจะจบท่อนฮุก",
+        genreDiveTitle: "ขุดหาเพลงใหม่ ↗",
+        genreDiveDescription: "ลองสำรวจแนวเพลงที่คุณยังไม่ค่อยได้ฟัง",
+        libraryLabel: "ค้นหาเพลงและเพลย์ลิสต์",
+        searchEmpty: "ค้นหาเพลงจากชั้นเพลง Side A",
+        noNovelResults: "ไม่พบนิยาย ลองค้นหาด้วยชื่อเรื่อง ผู้เขียน ธีม หรือแนวเพลง",
+        noSongResults: "ไม่พบเพลง ลองค้นหาด้วยชื่อเพลง ศิลปิน หรือแนวเพลงอื่น",
+        noSavedTracks: "ยังไม่มีเพลงที่บันทึก แตะหัวใจบนเพลงเพื่อบันทึกไว้",
+        playlistSelectLabel: "เลือกเพลย์ลิสต์",
+        shareQr: "แชร์ QR",
+        playlistEmpty: "สร้างเพลย์ลิสต์ แล้วเพิ่มเพลงจากผลค้นหาหรือมิกซ์ปัจจุบัน",
+        footerLeft: "ทำขึ้นเพื่อการเดินทางไกลกลับบ้าน",
+        footerRight: "ให้เข็มแผ่นเสียงหมุนต่อไป",
+        novelReady: "หนังสือเล่มถัดไปพร้อมแล้ว",
+        savedNovelsDescription: "นิยายที่บันทึกไว้อ่านภายหลัง",
+        mixReady: "มิกซ์เพลงของคุณพร้อมแล้ว",
+        findBooks: "ค้นหาหนังสือเหล่านี้",
+        findMix: "ค้นหามิกซ์นี้บน Spotify"
+      }
+    };
+    function tr(key) {
+      return translations[uiLanguage][key] || translations.en[key] || key;
+    }
+    function applyLanguage() {
+      document.documentElement.lang = uiLanguage;
+      languageSelect.value = uiLanguage;
+      languageSelect.setAttribute("aria-label", tr("languageLabel"));
+      document.querySelectorAll("[data-i18n]").forEach(element => {
+        const translation = translations[uiLanguage][element.dataset.i18n];
+        if (translation) element.textContent = translation;
+      });
+      document.querySelectorAll("[data-i18n-aria-label]").forEach(element => {
+        element.setAttribute("aria-label", tr(element.dataset.i18nAriaLabel));
+      });
+      document.querySelectorAll("[data-i18n-placeholder]").forEach(element => {
+        element.placeholder = tr(element.dataset.i18nPlaceholder);
+      });
+    }
+    languageSelect.addEventListener("change", () => {
+      uiLanguage = languageSelect.value === "th" ? "th" : "en";
+      localStorage.setItem("side-a-language", uiLanguage);
+      applyLanguage();
+      updateModeText();
+      if (state.mode === "songs") {
+        renderTracks(state.showingSaved ? songs.filter(song => state.saved.has(song.title)) : state.current);
+      } else if (state.mode === "novels") {
+        renderBooks(state.showingSaved ? novels.filter(novel => state.savedBooks.has(novel.title)) : state.currentBooks);
+      }
+      if (state.mode !== "letter") renderSearchResults(document.getElementById("songSearch").value);
+    });
+    applyLanguage();
+
+    function toggleAuth(open) {
+      authOverlay.classList.toggle('open', open);
+      authOverlay.setAttribute('aria-hidden', String(!open));
+      document.body.classList.toggle('auth-open', open);
+    }
+
+    signInButton.addEventListener('click', () => toggleAuth(true));
+    authClose.addEventListener('click', () => toggleAuth(false));
+    createAccountButton.addEventListener('click', () => toggleAuth(false));
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && authOverlay.classList.contains('open')) {
+        toggleAuth(false);
+      }
+    });
+    authOverlay.addEventListener('click', (event) => {
+      if (event.target === authOverlay) {
+        toggleAuth(false);
+      }
+    });
+    authForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const emailInput = authForm.querySelector('input[type="email"]');
+      const email = emailInput.value.trim();
+      const toast = document.getElementById('toast');
+      const displayEmail = email || 'your account';
+      if (window.showToast) {
+        window.showToast(`Signed in as ${displayEmail}`);
+      } else if (toast) {
+        toast.textContent = `Signed in as ${displayEmail}`;
+        toast.classList.add('show');
+        clearTimeout(window.toastTimer);
+        window.toastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
+      }
+      toggleAuth(false);
+      authForm.reset();
+    });
+
     const songs = [
       { title: "Anything", artist: "Adrianne Lenker", genre: "indie", moods: ["easy", "focused"], energy: 1, image: "photo-1516280440614-37939bbacd81", note: "soft edges · 2020" },
       { title: "Show Me How", artist: "Men I Trust", genre: "indie", moods: ["easy", "focused"], energy: 2, image: "photo-1511379938547-c1f69419868d", note: "dream pop · 2018" },
@@ -565,28 +1082,83 @@
       { title: "abcdefu", artist: "GAYLE", genre: "pop", moods: ["alive", "focused"], energy: 4, image: "photo-1459749411175-04bf5292ceea", note: "breakup sing-along · 2021" },
       { title: "WAP", artist: "Cardi B ft. Megan Thee Stallion", genre: "hip-hop", moods: ["alive"], energy: 5, image: "photo-1501386761578-eac5c94b800a", note: "dance challenge · 2020" },
       { title: "Savage", artist: "Megan Thee Stallion", genre: "hip-hop", moods: ["alive", "focused"], energy: 5, image: "photo-1514525253161-7a46d19cd819", note: "viral dance hit · 2020" },
-      { title: "Say So", artist: "Doja Cat", genre: "pop", moods: ["alive", "easy"], energy: 4, image: "photo-1508700115892-45ecd05ae2ad", note: "TikTok dance · 2020" }
+      { title: "Say So", artist: "Doja Cat", genre: "pop", moods: ["alive", "easy"], energy: 4, image: "photo-1508700115892-45ecd05ae2ad", note: "TikTok dance · 2020" },
+      { title: "ลาลาลอย (100%)", artist: "The TOYS", genre: "indie", moods: ["easy", "focused"], energy: 2, image: "photo-1511379938547-c1f69419868d", note: "Thai indie pop · 2018", language: "Thai", countries: ["th"] },
+      { title: "ฝนตกไหม", artist: "Three Man Down", genre: "pop", moods: ["easy", "focused"], energy: 2, image: "photo-1470252649378-9c29740c9fa8", note: "Thai pop · 2019", language: "Thai", countries: ["th"] },
+      { title: "ถ้าเราเจอกันอีก", artist: "Tilly Birds", genre: "pop", moods: ["focused", "easy"], energy: 2, image: "photo-1516280440614-37939bbacd81", note: "Thai pop · 2021", language: "Thai", countries: ["th"] },
+      { title: "วัดปะหล่ะ? (TEST ME)", artist: "4EVE", genre: "pop", moods: ["alive", "easy"], energy: 4, image: "photo-1508700115892-45ecd05ae2ad", note: "Thai dance-pop · 2021", language: "Thai", countries: ["th"] },
+      { title: "โต๊ะริม", artist: "NONT TANONT", genre: "pop", moods: ["easy", "alive"], energy: 3, image: "photo-1500530855697-b586d89ba3ee", note: "Thai pop · 2022", language: "Thai", countries: ["th"] },
+      { title: "ดาวหางฮัลเลย์", artist: "fellow fellow", genre: "indie", moods: ["easy", "focused"], energy: 2, image: "photo-1470252649378-9c29740c9fa8", note: "Thai indie pop · 2023", language: "Thai", countries: ["th"] },
+      { title: "คนไม่จำเป็น", artist: "Getsunova", genre: "pop", moods: ["focused", "easy"], energy: 3, image: "photo-1511379938547-c1f69419868d", note: "Thai pop-rock · 2015", language: "Thai", countries: ["th"] },
+      { title: "คลั่งรัก", artist: "First Anuwat", genre: "pop", moods: ["alive", "easy"], energy: 3, image: "photo-1516280440614-37939bbacd81", note: "Thai pop · 2021", language: "Thai", countries: ["th"] },
+      { title: "มีเพียงรัก", artist: "D2B", genre: "t-pop", moods: ["easy", "focused"], energy: 2, image: "photo-1516280440614-37939bbacd81", note: "Thai pop hit · 2000", language: "Thai", countries: ["th"] },
+      { title: "แฟนจ๋า", artist: "Bird Thongchai", genre: "t-pop", moods: ["alive", "easy"], energy: 4, image: "photo-1508700115892-45ecd05ae2ad", note: "Thai pop hit · 2001", language: "Thai", countries: ["th"] },
+      { title: "ต่อหน้าฉัน (เธอทำอย่างนั้นได้อย่างไร)", artist: "D2B", genre: "t-pop", moods: ["alive", "easy"], energy: 4, image: "photo-1508700115892-45ecd05ae2ad", note: "Thai pop · 2001", language: "Thai", countries: ["th"] },
+      { title: "กราบเท้ายามเย็น", artist: "Palmy", genre: "t-pop", moods: ["easy", "focused"], energy: 2, image: "photo-1470252649378-9c29740c9fa8", note: "Thai pop hit · 2002", language: "Thai", countries: ["th"] },
+      { title: "คู่กัน", artist: "Scrubb", genre: "t-pop", moods: ["easy", "focused"], energy: 2, image: "photo-1511379938547-c1f69419868d", note: "Thai indie hit · 2003", language: "Thai", countries: ["th"] },
+      { title: "กอด", artist: "Clash", genre: "t-pop", moods: ["easy", "alive"], energy: 3, image: "photo-1500530855697-b586d89ba3ee", note: "Thai rock hit · 2004", language: "Thai", countries: ["th"] },
+      { title: "ชอบที่คิดถึง", artist: "POTATO", genre: "t-pop", moods: ["focused", "easy"], energy: 3, image: "photo-1516280440614-37939bbacd81", note: "Thai pop-rock hit · 2005", language: "Thai", countries: ["th"] },
+      { title: "เพลงรัก", artist: "Modern Dog", genre: "t-pop", moods: ["easy", "focused"], energy: 2, image: "photo-1470225620780-dba8ba36b745", note: "Thai rock hit · 2006", language: "Thai", countries: ["th"] },
+      { title: "แค่บอกว่ารัก", artist: "Bodyslam", genre: "t-pop", moods: ["alive", "focused"], energy: 4, image: "photo-1506157786151-b8491531f063", note: "Thai rock hit · 2007", language: "Thai", countries: ["th"] },
+      { title: "ไม่บอกเธอ", artist: "Bedroom Audio", genre: "indie", moods: ["focused", "easy"], energy: 2, image: "photo-1511379938547-c1f69419868d", note: "Thai indie pop · 2013", language: "Thai", countries: ["th"] },
+      { title: "เพลงที่เธอไม่ฟัง", artist: "Bedroom Audio", genre: "indie", moods: ["focused", "easy"], energy: 2, image: "photo-1516280440614-37939bbacd81", note: "Thai indie pop · 2014", language: "Thai", countries: ["th"] },
+      { title: "สิ่งที่อยู่ในใจ", artist: "Da Endorphine", genre: "t-pop", moods: ["focused", "easy"], energy: 2, image: "photo-1511379938547-c1f69419868d", note: "Thai pop hit · 2008", language: "Thai", countries: ["th"] },
+      { title: "อยู่ไปได้", artist: "Big Ass", genre: "t-pop", moods: ["alive", "easy"], energy: 4, image: "photo-1501386761578-eac5c94b800a", note: "Thai rock hit · 2009", language: "Thai", countries: ["th"] },
+      { title: "คิดฮอด", artist: "Bodyslam", genre: "t-pop", moods: ["focused", "easy"], energy: 3, image: "photo-1470252649378-9c29740c9fa8", note: "Thai rock hit · 2010", language: "Thai", countries: ["th"] },
+      { title: "ยาพิษ", artist: "Bodyslam", genre: "t-pop", moods: ["alive", "focused"], energy: 5, image: "photo-1514525253161-7a46d19cd819", note: "Thai rock hit · 2011", language: "Thai", countries: ["th"] },
+      { title: "ไกลแค่ไหนคือใกล้", artist: "Getsunova", genre: "t-pop", moods: ["focused", "easy"], energy: 2, image: "photo-1516280440614-37939bbacd81", note: "Thai pop-rock hit · 2012", language: "Thai", countries: ["th"] },
+      { title: "บางสิ่ง", artist: "Klear", genre: "t-pop", moods: ["easy", "focused"], energy: 3, image: "photo-1470252649378-9c29740c9fa8", note: "Thai pop hit · 2013", language: "Thai", countries: ["th"] },
+      { title: "คนมีเจ้าของ", artist: "Jetset'er", genre: "t-pop", moods: ["easy", "alive"], energy: 3, image: "photo-1508700115892-45ecd05ae2ad", note: "Thai pop hit · 2014", language: "Thai", countries: ["th"] },
+      { title: "เฉยเมย", artist: "YOUNGOHM", genre: "hip-hop", moods: ["alive", "focused"], energy: 4, image: "photo-1501386761578-eac5c94b800a", note: "Thai hip-hop · 2017", language: "Thai", countries: ["th"] },
+      { title: "ไม่ได้เรื่อง", artist: "The Parkinson", genre: "t-pop", moods: ["easy", "focused"], energy: 2, image: "photo-1511379938547-c1f69419868d", note: "Thai indie hit · 2016", language: "Thai", countries: ["th"] },
+      { title: "ก่อน", artist: "Paradox", genre: "t-pop", moods: ["focused", "easy"], energy: 3, image: "photo-1470225620780-dba8ba36b745", note: "Thai rock hit · 2017", language: "Thai", countries: ["th"] },
+      { title: "กลิ่นดอกไม้", artist: "Ink Waruntorn", genre: "t-pop", moods: ["easy", "focused"], energy: 2, image: "photo-1500530855697-b586d89ba3ee", note: "Thai pop hit · 2020", language: "Thai", countries: ["th"] },
+      { title: "จำเก่ง", artist: "Tilly Birds", genre: "t-pop", moods: ["alive", "focused"], energy: 4, image: "photo-1514525253161-7a46d19cd819", note: "Thai pop hit · 2024", language: "Thai", countries: ["th"] },
+      { title: "Charm", artist: "LYKN", genre: "t-pop", moods: ["alive", "easy"], energy: 4, image: "photo-1506157786151-b8491531f063", note: "Thai pop hit · 2024", language: "Thai", countries: ["th"] },
+      { title: "พี่ชอบหนูที่สุดเลย", artist: "PUN", genre: "t-pop", moods: ["alive", "easy"], energy: 4, image: "photo-1508700115892-45ecd05ae2ad", note: "Thai pop hit · 2025", language: "Thai", countries: ["th"] },
+      { title: "ธาตุทองซาวด์", artist: "YOUNGOHM feat. SONOFO", genre: "hip-hop", moods: ["alive"], energy: 5, image: "photo-1514525253161-7a46d19cd819", note: "Thai hip-hop · 2023", language: "Thai", countries: ["th"] },
+      { title: "Ditto", artist: "NewJeans", genre: "k-pop", moods: ["easy", "focused"], energy: 2, image: "photo-1511379938547-c1f69419868d", note: "Korean pop · 2022", language: "Korean", countries: ["kr"] },
+      { title: "Love Lee", artist: "AKMU", genre: "k-pop", moods: ["alive", "easy"], energy: 3, image: "photo-1508700115892-45ecd05ae2ad", note: "Korean pop · 2023", language: "Korean", countries: ["kr"] },
+      { title: "ANTIFRAGILE", artist: "LE SSERAFIM", genre: "k-pop", moods: ["alive", "focused"], energy: 5, image: "photo-1506157786151-b8491531f063", note: "Korean dance-pop · 2022", language: "Korean", countries: ["kr"] },
+      { title: "夜に駆ける", artist: "YOASOBI", genre: "pop", moods: ["alive", "focused"], energy: 4, image: "photo-1506157786151-b8491531f063", note: "Japanese pop · 2019", language: "Japanese", countries: ["jp"] },
+      { title: "Lemon", artist: "Kenshi Yonezu", genre: "pop", moods: ["focused", "easy"], energy: 2, image: "photo-1516280440614-37939bbacd81", note: "Japanese pop · 2018", language: "Japanese", countries: ["jp"] },
+      { title: "踊り子", artist: "Vaundy", genre: "indie", moods: ["easy", "alive"], energy: 3, image: "photo-1470225620780-dba8ba36b745", note: "Japanese indie pop · 2021", language: "Japanese", countries: ["jp"] },
+      { title: "Heeriye", artist: "Jasleen Royal & Arijit Singh", genre: "pop", moods: ["easy", "alive"], energy: 3, image: "photo-1500530855697-b586d89ba3ee", note: "Hindi pop · 2023", language: "Hindi", countries: ["in"] },
+      { title: "Kesariya", artist: "Pritam & Arijit Singh", genre: "pop", moods: ["easy", "focused"], energy: 3, image: "photo-1470252649378-9c29740c9fa8", note: "Hindi film song · 2022", language: "Hindi", countries: ["in"] },
+      { title: "Chaleya", artist: "Anirudh Ravichander, Arijit Singh & Shilpa Rao", genre: "pop", moods: ["alive", "easy"], energy: 4, image: "photo-1508700115892-45ecd05ae2ad", note: "Hindi film song · 2023", language: "Hindi", countries: ["in"] },
+      { title: "告白气球", artist: "Jay Chou", genre: "pop", moods: ["easy", "alive"], energy: 3, image: "photo-1511379938547-c1f69419868d", note: "Mandopop · 2016", language: "Mandarin", countries: ["cn", "tw"] },
+      { title: "小幸运", artist: "Hebe Tien", genre: "pop", moods: ["focused", "easy"], energy: 2, image: "photo-1516280440614-37939bbacd81", note: "Mandopop · 2015", language: "Mandarin", countries: ["cn", "tw"] },
+      { title: "Despechá", artist: "ROSALÍA", genre: "pop", moods: ["alive", "easy"], energy: 4, image: "photo-1506157786151-b8491531f063", note: "Spanish pop · 2022", language: "Spanish", countries: ["es"] },
+      { title: "Provenza", artist: "KAROL G", genre: "pop", moods: ["alive", "easy"], energy: 4, image: "photo-1508700115892-45ecd05ae2ad", note: "Spanish-language pop · 2022", language: "Spanish", countries: ["es"] }
     ];
     const novels = [
-      { title: "Heartstopper", author: "Alice Oseman", category: "Contemporary romance", songGenres: ["indie", "pop"], moods: ["easy", "alive"], energy: 2, color: "#c6e4d2" },
-      { title: "The Sun Is Also a Star", author: "Nicola Yoon", category: "Contemporary romance", songGenres: ["soul", "pop"], moods: ["easy", "focused"], energy: 2, color: "#f4d28c" },
-      { title: "The Inheritance Games", author: "Jennifer Lynn Barnes", category: "Mystery", songGenres: ["electronic", "pop"], moods: ["focused", "alive"], energy: 3, color: "#d9c6a5" },
-      { title: "A Good Girl's Guide to Murder", author: "Holly Jackson", category: "Mystery thriller", songGenres: ["hip-hop", "electronic"], moods: ["focused", "alive"], energy: 4, color: "#d4d7b4" },
-      { title: "Legendborn", author: "Tracy Deonn", category: "Fantasy", songGenres: ["soul", "hip-hop"], moods: ["alive", "focused"], energy: 4, color: "#b6c7d8" },
-      { title: "Six of Crows", author: "Leigh Bardugo", category: "Fantasy heist", songGenres: ["electronic", "hip-hop"], moods: ["focused", "alive"], energy: 4, color: "#c5c6bf" },
-      { title: "The Cruel Prince", author: "Holly Black", category: "Fantasy", songGenres: ["indie", "electronic"], moods: ["focused", "alive"], energy: 3, color: "#c3d0be" },
-      { title: "The Hunger Games", author: "Suzanne Collins", category: "Dystopian adventure", songGenres: ["pop", "electronic"], moods: ["alive", "focused"], energy: 5, color: "#e0b48d" },
-      { title: "Percy Jackson and the Lightning Thief", author: "Rick Riordan", category: "Mythic adventure", songGenres: ["pop", "hip-hop"], moods: ["alive", "easy"], energy: 4, color: "#a9d8e5" },
-      { title: "The Poet X", author: "Elizabeth Acevedo", category: "Verse novel", songGenres: ["hip-hop", "soul"], moods: ["focused", "alive"], energy: 3, color: "#e4b7a3" },
-      { title: "The Summer I Turned Pretty", author: "Jenny Han", category: "Summer romance", songGenres: ["pop", "indie"], moods: ["easy", "alive"], energy: 3, color: "#f1cb9c" },
-      { title: "One of Us Is Lying", author: "Karen M. McManus", category: "Mystery", songGenres: ["pop", "electronic"], moods: ["focused", "alive"], energy: 4, color: "#bdc9cd" },
-      { title: "Firekeeper's Daughter", author: "Angeline Boulley", category: "Mystery thriller", songGenres: ["soul", "hip-hop"], moods: ["focused", "alive"], energy: 4, color: "#d29d7c" },
-      { title: "They Both Die at the End", author: "Adam Silvera", category: "Speculative fiction", songGenres: ["indie", "soul"], moods: ["focused", "easy"], energy: 2, color: "#b8c8d8" },
-      { title: "Cemetery Boys", author: "Aiden Thomas", category: "Fantasy romance", songGenres: ["pop", "indie"], moods: ["easy", "alive"], energy: 3, color: "#c4b8d1" },
-      { title: "Darius the Great Is Not Okay", author: "Adib Khorram", category: "Contemporary", songGenres: ["indie", "soul"], moods: ["focused", "easy"], energy: 2, color: "#c8d7bb" },
-      { title: "Cinder", author: "Marissa Meyer", category: "Science fiction", songGenres: ["electronic", "pop"], moods: ["focused", "alive"], energy: 3, color: "#b4d2d2" },
-      { title: "The Ballad of Songbirds and Snakes", author: "Suzanne Collins", category: "Dystopian fiction", songGenres: ["country", "electronic"], moods: ["focused", "alive"], energy: 4, color: "#dbc28c" },
-      { title: "The Fault in Our Stars", author: "John Green", category: "Contemporary romance", songGenres: ["indie", "folk"], moods: ["focused", "easy"], energy: 2, color: "#b9d1e2" }
+      { title: "Heartstopper", author: "Alice Oseman", category: "Contemporary romance", synopsis: "Quiet boy-next-door Charlie has met rugby boy Nick, and one accidental friendship is turning into the sweetest rumor at school.", synopsisTh: "ชาร์ลีหนุ่มเงียบ ๆ พบกับนิคนักรักบี้ และมิตรภาพจากเหตุบังเอิญกำลังกลายเป็นเรื่องหวานที่สุดในโรงเรียน", songTitle: "Golden", songArtist: "Jill Scott", songGenres: ["indie", "pop"], moods: ["easy", "alive"], energy: 2, color: "#c6e4d2" },
+      { title: "The Sun Is Also a Star", author: "Nicola Yoon", category: "Contemporary romance", synopsis: "A girl facing deportation and a boy who believes in science have one very dramatic day to prove fate wrong.", synopsisTh: "สาวที่อาจถูกส่งกลับประเทศกับหนุ่มผู้เชื่อเรื่องวิทยาศาสตร์มีเพียงวันเดียวเพื่อพิสูจน์ว่าชะตาอาจเปลี่ยนได้", songTitle: "Pink + White", songArtist: "Frank Ocean", songGenres: ["soul", "pop"], moods: ["easy", "focused"], energy: 2, color: "#f4d28c" },
+      { title: "The Inheritance Games", author: "Jennifer Lynn Barnes", category: "Mystery", synopsis: "A broke teen inherits a billionaire's fortune and immediately becomes the suspect in a mansion full of suspicious secrets.", synopsisTh: "สาววัยรุ่นไร้เงินได้มรดกมหาเศรษฐีและกลายเป็นผู้ต้องสงสัยท่ามกลางเบาะแสในคฤหาสน์", songTitle: "Open Eye Signal", songArtist: "Jon Hopkins", songGenres: ["electronic", "pop"], moods: ["focused", "alive"], energy: 3, color: "#d9c6a5" },
+      { title: "A Good Girl's Guide to Murder", author: "Holly Jackson", category: "Mystery thriller", synopsis: "Pippa chooses a closed murder as her school project, only to discover that everyone in town remembers it differently.", synopsisTh: "พิพพาเลือกคดีฆาตกรรมที่ปิดเป็นโครงการโรงเรียน แต่พบว่าทุกคนในเมืองมีเรื่องเล่าที่แตกต่างกัน", songTitle: "Them Changes", songArtist: "Thundercat", songGenres: ["hip-hop", "electronic"], moods: ["focused", "alive"], energy: 4, color: "#d4d7b4" },
+      { title: "Legendborn", author: "Tracy Deonn", category: "Fantasy", synopsis: "After losing her mother, Bree stumbles into a secret society of magical knights and learns the truth is not so legendary.", synopsisTh: "หลังสูญเสียแม่ บรีบังเอิญพบสมาคมอัศวินเวทมนตร์ลับและรู้ว่าความจริงอาจไม่เหมือนตำนาน", songTitle: "Tadow", songArtist: "Masego & FKJ", songGenres: ["soul", "hip-hop"], moods: ["alive", "focused"], energy: 4, color: "#b6c7d8" },
+      { title: "Six of Crows", author: "Leigh Bardugo", category: "Fantasy heist", synopsis: "A notorious crew of beautiful liars takes on an impossible heist with too much at stake and even more secrets.", synopsisTh: "แก๊งชั่วร้ายหกคนรับภารกิจปล้นสุดยาก โดยเสี่ยงกับทุกอย่างและพกความลับมากมาย", songTitle: "Not Like Us", songArtist: "Kendrick Lamar", songGenres: ["electronic", "hip-hop"], moods: ["focused", "alive"], energy: 4, color: "#c5c6bf" },
+      { title: "The Cruel Prince", author: "Holly Black", category: "Fantasy", synopsis: "Human girl Jude wants power in a faerie court where every smile could be a threat and every enemy dangerous.", synopsisTh: "สาวมนุษย์จูดอยากมีอำนาจในราชสำนักแฟรี่ ซึ่งรอยยิ้มอาจเป็นอันตรายและศัตรูก็ลึกซึ้ง", songTitle: "A Walk", songArtist: "Tycho", songGenres: ["indie", "electronic"], moods: ["focused", "alive"], energy: 3, color: "#c3d0be" },
+      { title: "The Hunger Games", author: "Suzanne Collins", category: "Dystopian adventure", synopsis: "Katniss volunteers for a televised fight to the death, because apparently the government was due for a wake-up call.", synopsisTh: "แคตนิสสมัครเข้าร่วมเกมความตายบนโทรทัศน์เพื่อล่วงรู้ว่ารัฐบาลกำลังทำให้โลกวุ่นวาย", songTitle: "Anxiety", songArtist: "Doechii", songGenres: ["pop", "electronic"], moods: ["alive", "focused"], energy: 5, color: "#e0b48d" },
+      { title: "Percy Jackson and the Lightning Thief", author: "Rick Riordan", category: "Mythic adventure", synopsis: "Percy discovers he's a demigod, loses a lightning bolt for the gods, and has to return it before family dinner goes divine.", synopsisTh: "เพอร์ซี่พบว่าตัวเองเป็นลูกครึ่งเทพและต้องตามหาอาวุธสายฟ้าก่อนสงครามของเหล่าเทพบานปลาย", songTitle: "Million Dollar Baby", songArtist: "Tommy Richman", songGenres: ["pop", "hip-hop"], moods: ["alive", "easy"], energy: 4, color: "#a9d8e5" },
+      { title: "The Poet X", author: "Elizabeth Acevedo", category: "Verse novel", synopsis: "Xiomara finds her voice through slam poetry while family, faith, and first love all demand an answer.", synopsisTh: "ซิโอมาราพบเสียงของตัวเองผ่านบทกวีสแลมขณะที่ครอบครัวศาสนาและรักครั้งแรกเรียกร้องคำตอบ", songTitle: "Unwritten", songArtist: "Natasha Bedingfield", songGenres: ["hip-hop", "soul"], moods: ["focused", "alive"], energy: 3, color: "#e4b7a3" },
+      { title: "The Summer I Turned Pretty", author: "Jenny Han", category: "Summer romance", synopsis: "Belly returns to her favorite beach house, only for first crushes and old friendships to become completely complicated.", synopsisTh: "เบลลีกลับไปบ้านริมชายหาดโปรด และพบว่ารักครั้งแรกกับเพื่อนเก่าเข้ามาทำให้ทุกอย่างยุ่งเหยิง", songTitle: "Birds of a Feather", songArtist: "Billie Eilish", songGenres: ["pop", "indie"], moods: ["easy", "alive"], energy: 3, color: "#f1cb9c" },
+      { title: "One of Us Is Lying", author: "Karen M. McManus", category: "Mystery", synopsis: "Four students walk into detention with the town's gossip; one walks out dead and the remaining three are prime suspects.", synopsisTh: "นักเรียน 4 คนเข้าห้องลงโทษพร้อมข่าวลือของเมือง แต่มีคนตาย และคนอื่นทั้งสามกลายเป็นผู้ต้องสงสัย", songTitle: "abcdefu", songArtist: "GAYLE", songGenres: ["pop", "electronic"], moods: ["focused", "alive"], energy: 4, color: "#bdc9cd" },
+      { title: "Firekeeper's Daughter", author: "Angeline Boulley", category: "Mystery thriller", synopsis: "Daunis agrees to go undercover in her Ojibwe community, where family loyalty and a deadly investigation keep colliding.", synopsisTh: "ดอนิสยอมแฝงตัวในชุมชนโอจีบเวเพื่อสืบคดีอันตรายซึ่งท้าทายความภักดีต่อครอบครัว", songTitle: "Golden", songArtist: "HUNTR/X", songGenres: ["soul", "hip-hop"], moods: ["focused", "alive"], energy: 4, color: "#d29d7c" },
+      { title: "They Both Die at the End", author: "Adam Silvera", category: "Speculative fiction", synopsis: "Mateo and Rufus receive the same death warning, then decide to spend their final hours making their first real friend.", synopsisTh: "มาเทโอและรูฟัสได้รับแจ้งว่าเป็นวันสุดท้ายของชีวิต ทั้งคู่จึงตัดสินใจใช้เวลาชั่วโมงสุดท้ายกับการเป็นเพื่อนกัน", songTitle: "Beautiful Things", songArtist: "Benson Boone", songGenres: ["indie", "soul"], moods: ["focused", "easy"], energy: 2, color: "#b8c8d8" },
+      { title: "Cemetery Boys", author: "Aiden Thomas", category: "Fantasy romance", synopsis: "Yadriel summons a ghost to prove he's a brujo, but the spirit refuses to leave and has secrets of his own.", synopsisTh: "ยาดเรียลเรียกวิญญาณเพื่อพิสูจน์ตัวเองว่าคือบรูโฮ แต่วิญญาณนั้นปฏิเสธที่จะไปและพกความลับมาด้วย", songTitle: "Chaleya", songArtist: "Anirudh Ravichander, Arijit Singh & Shilpa Rao", songGenres: ["pop", "indie"], moods: ["easy", "alive"], energy: 3, color: "#c4b8d1" },
+      { title: "Darius the Great Is Not Okay", author: "Adib Khorram", category: "Contemporary", synopsis: "Darius travels to Iran, unexpectedly makes a friend, and begins a painfully honest search for where he belongs.", synopsisTh: "แดเรียสเดินทางไปอิหร่านและพบเพื่อนที่ไม่คาดคิด ขณะเริ่มมองหาที่ที่ตัวเองมีความหมาย", songTitle: "First Day of My Life", songArtist: "Bright Eyes", songGenres: ["indie", "soul"], moods: ["focused", "easy"], energy: 2, color: "#c8d7bb" },
+      { title: "Cinder", author: "Marissa Meyer", category: "Science fiction", synopsis: "A cyborg mechanic is drafted into palace drama, lunar secrets, and a ball that could expose everything.", synopsisTh: "ช่างซ่อมไซบอร์กถูกลากเข้าสู่เรื่องวุ่นวายในวัง ความลับของชาวจันทร์ และงานเต้นรำที่อาจเปิดโปงทุกอย่าง", songTitle: "Espresso", songArtist: "Sabrina Carpenter", songGenres: ["electronic", "pop"], moods: ["focused", "alive"], energy: 3, color: "#b4d2d2" },
+      { title: "The Ballad of Songbirds and Snakes", author: "Suzanne Collins", category: "Dystopian fiction", synopsis: "Before Snow became president, he was a charming mentor hiding ambition, resentment, and a talent for making things worse.", synopsisTh: "ก่อนสโนว์จะเป็นประธานาธิบดี เขาเป็นอาจารย์ผู้ดูน่าเชื่อถือที่ซ่อนความทะเยอทะยานไว้ใต้รอยยิ้ม", songTitle: "Ordinary", songArtist: "Alex Warren", songGenres: ["country", "electronic"], moods: ["focused", "alive"], energy: 4, color: "#dbc28c" },
+      { title: "The Fault in Our Stars", author: "John Green", category: "Contemporary romance", synopsis: "Hazel meets Augustus in a cancer support group, and their tenderly disastrous crush becomes the trip of a lifetime.", synopsisTh: "เฮเซิลพบอกัสตัสในกลุ่มช่วยเหลือผู้ป่วยมะเร็ง และรักครั้งนี้พากับเขาไปเที่ยวที่เปลี่ยนชีวิต", songTitle: "A Case of You", songArtist: "Joni Mitchell", songGenres: ["indie", "folk"], moods: ["focused", "easy"], energy: 2, color: "#b9d1e2" },
+      { title: "พี่ว้ากตัวร้ายกับนายปีหนึ่ง (SOTUS)", author: "BitterSweet", category: "Thai BL · Campus romance", categoryTh: "นิยายวายไทย · โรแมนซ์ในรั้วมหาวิทยาลัย", language: "Thai", countries: ["th"], searchTerms: "SOTUS พี่ว้ากตัวร้ายกับนายปีหนึ่ง", synopsis: "University hazing rules pit a tough senior against a stubborn freshman until arguments turn into an inconvenient crush.", synopsisTh: "กฎรับน้องมหาวิทยาลัยทำให้รุ่นพี่แกร่งเผชิญกับรุ่นน้องดื้อรั้น จนการโต้แย้งกลายเป็นความรู้สึกที่ไม่วางแผนไว้", songTitle: "คู่กัน", songArtist: "Scrubb", songGenres: ["indie", "pop"], moods: ["easy", "focused"], energy: 3, color: "#d7b6aa" },
+      { title: "เพราะเราคู่กัน (2gether)", author: "JittiRain", category: "Thai BL · Contemporary romance", categoryTh: "นิยายวายไทย · โรแมนซ์ร่วมสมัย", language: "Thai", countries: ["th"], searchTerms: "2gether เพราะเราคู่กัน เพราะเรา คู่กัน", synopsis: "A fake relationship starts because of campus gossip, but Sarawat and Tine quickly become the couple they cannot stop pretending to be.", synopsisTh: "เรื่องรักหลอก ๆ เริ่มจากข่าวลือในมหาวิทยาลัย แต่สารวัตรและไทน์กลายเป็นคู่ที่ยิ่งทำเป็นยิ่งจริง", songTitle: "ติดตรง", songArtist: "Scrubb", songGenres: ["pop", "indie"], moods: ["easy", "alive"], energy: 3, color: "#e5c4a4" },
+      { title: "ทฤษฎีจีบเธอ (Theory of Love)", author: "JittiRain", category: "Thai BL · Slow-burn romance", categoryTh: "นิยายวายไทย · รักค่อยเป็นค่อยไป", language: "Thai", countries: ["th"], searchTerms: "Theory of Love ทฤษฎีจีบเธอ", synopsis: "Third has loved his friend Khai for years, while Khai seems professionally skilled at missing every romantic clue.", synopsisTh: "เธิร์ดแอบรักไคมานาน ขณะที่ไคมีความสามารถพิเศษในการมองข้ามท่าทีรักทุกครั้ง", songTitle: "ก่อน", songArtist: "Paradox", songGenres: ["indie", "soul"], moods: ["focused", "easy"], energy: 2, color: "#c5d0c0" },
+      { title: "นิทานพันดาว (A Tale of Thousand Stars)", author: "Bacteria", category: "Thai BL · Contemporary romance", categoryTh: "นิยายวายไทย · โรแมนซ์ร่วมสมัย", language: "Thai", countries: ["th"], searchTerms: "A Tale of Thousand Stars นิทานพันดาว", synopsis: "A volunteer teacher heads into the mountains and discovers the village chief is hiding a heartfelt promise behind his quiet glare.", synopsisTh: "อาจารย์อาสาลงพื้นที่ชนบทและพบว่าหัวหน้าชุมชนซ่อนคำสัญญาที่จริงใจไว้หลังสายตาที่เงียบขรึม", songTitle: "ดาวหางฮัลเลย์", songArtist: "fellow fellow", songGenres: ["folk", "indie"], moods: ["easy", "focused"], energy: 2, color: "#bdd1d5" },
+      { title: "ด้ายแดง (Until We Meet Again)", author: "LazySheep", category: "Thai BL · Fantasy romance", categoryTh: "นิยายวายไทย · โรแมนซ์แฟนตาซี", language: "Thai", countries: ["th"], searchTerms: "Until We Meet Again ด้ายแดง", synopsis: "Dean and Pharm share a past neither remembers, but the red thread between them refuses to stay untied.", synopsisTh: "ดีนและภัมนำอดีตที่ทั้งคู่จำไม่ได้มาทำให้ด้ายแดงระหว่างพวกเขาไม่ยอมคลายออก", songTitle: "ลาก่อน", songArtist: "Bodyslam", songGenres: ["pop", "soul"], moods: ["focused", "easy"], energy: 3, color: "#d7b6bc" },
+      { title: "การุณยฆาต (Manner of Death)", author: "Sammon", category: "Thai BL · Mystery romance", categoryTh: "นิยายวายไทย · สืบสวนโรแมนซ์", language: "Thai", countries: ["th"], searchTerms: "Manner of Death การุณยฆาต", synopsis: "A forensic doctor insists a death was no accident, but the handsome suspect keeps making every clue look personal.", synopsisTh: "แพทย์นิติเวชยืนยันว่าการตายมิใช่อุบัติเหตุ ส่วนผู้ต้องสงสัยหล่อ ๆ ทำให้ทุกเบาะแสดูมีเรื่องส่วนตัว", songTitle: "ยาพิษ", songArtist: "Bodyslam", songGenres: ["electronic", "hip-hop"], moods: ["focused", "alive"], energy: 4, color: "#b8c2bd" },
+      { title: "คาธ (The Eclipse)", author: "Prapt", category: "Thai BL · Mystery romance", categoryTh: "นิยายวายไทย · สืบสวนโรแมนซ์", language: "Thai", countries: ["th"], searchTerms: "The Eclipse คาธ", synopsis: "Rules, superstition, and school secrets surround Akk and Ayan as a quiet eclipse exposes a very loud truth.", synopsisTh: "กฎ กัมมันตภาพของความเชื่อ และความลับโรงเรียนล้อมรอบอักกับอัยันจนสุริยุปราคาพิสูจน์ความจริงที่ดังเกินคาด", songTitle: "แค่บอกว่ารัก", songArtist: "Bodyslam", songGenres: ["indie", "electronic"], moods: ["focused", "alive"], energy: 3, color: "#b9c9b9" },
+      { title: "รักโคตรร้าย สุดท้ายโคตรรัก (KinnPorsche)", author: "Daemi", category: "Thai BL · Crime romance", categoryTh: "นิยายวายไทย · โรแมนซ์อาชญากรรม", language: "Thai", countries: ["th"], searchTerms: "KinnPorsche รักโคตรร้าย สุดท้ายโคตรรัก", synopsis: "Porsche gets pulled into a mafia family as a bodyguard, only to discover that the boss's son is the real danger.", synopsisTh: "พอร์ชถูกลากเข้ามาเป็นบอดี้การ์ดครอบครัวมาเฟีย และพบว่าบุตรชายหัวหน้าคืออันตรายที่จริงใจที่สุด", songTitle: "ธาตุทองซาวด์", songArtist: "YOUNGOHM feat. SONOFO", songGenres: ["hip-hop", "electronic"], moods: ["alive", "focused"], energy: 5, color: "#c9b0a7" }
     ];
     const countryProfiles = {
       global: { songGenres: [], bookShelves: [] },
@@ -595,7 +1167,11 @@
       kr: { songGenres: ["k-pop", "pop"], bookShelves: ["romance", "fantasy"] },
       jp: { songGenres: ["electronic", "pop"], bookShelves: ["fantasy", "sci-fi"] },
       in: { songGenres: ["pop", "soul"], bookShelves: ["romance", "contemporary"] },
-      br: { songGenres: ["pop", "electronic"], bookShelves: ["romance", "adventure"] }
+      br: { songGenres: ["pop", "electronic"], bookShelves: ["romance", "adventure"] },
+      th: { songGenres: ["pop", "indie", "t-pop", "hip-hop"], bookShelves: ["romance", "contemporary", "boy-love"] },
+      cn: { songGenres: ["pop"], bookShelves: ["romance", "fantasy"] },
+      tw: { songGenres: ["pop"], bookShelves: ["romance", "contemporary"] },
+      es: { songGenres: ["pop"], bookShelves: ["romance", "contemporary"] }
     };
     const novelTags = {
       "Heartstopper": { shelves: ["romance", "contemporary"], tropes: ["slow-burn", "coming-of-age"] },
@@ -616,7 +1192,15 @@
       "Darius the Great Is Not Okay": { shelves: ["contemporary"], tropes: ["coming-of-age", "found-family"] },
       "Cinder": { shelves: ["sci-fi", "fantasy"], tropes: ["chosen-one", "slow-burn"] },
       "The Ballad of Songbirds and Snakes": { shelves: ["sci-fi", "adventure"], tropes: ["secrets", "chosen-one"] },
-      "The Fault in Our Stars": { shelves: ["romance", "contemporary"], tropes: ["coming-of-age", "slow-burn"] }
+      "The Fault in Our Stars": { shelves: ["romance", "contemporary"], tropes: ["coming-of-age", "slow-burn"] },
+      "พี่ว้ากตัวร้ายกับนายปีหนึ่ง (SOTUS)": { shelves: ["romance", "contemporary", "boy-love"], tropes: ["coming-of-age", "slow-burn"] },
+      "เพราะเราคู่กัน (2gether)": { shelves: ["romance", "contemporary", "boy-love"], tropes: ["coming-of-age", "slow-burn"] },
+      "ทฤษฎีจีบเธอ (Theory of Love)": { shelves: ["romance", "contemporary", "boy-love"], tropes: ["coming-of-age", "slow-burn"] },
+      "นิทานพันดาว (A Tale of Thousand Stars)": { shelves: ["romance", "contemporary", "boy-love"], tropes: ["coming-of-age", "slow-burn"] },
+      "ด้ายแดง (Until We Meet Again)": { shelves: ["romance", "fantasy", "boy-love"], tropes: ["found-family", "secrets"] },
+      "การุณยฆาต (Manner of Death)": { shelves: ["romance", "mystery", "boy-love"], tropes: ["secrets"] },
+      "คาธ (The Eclipse)": { shelves: ["romance", "mystery", "boy-love"], tropes: ["secrets", "coming-of-age"] },
+      "รักโคตรร้าย สุดท้ายโคตรรัก (KinnPorsche)": { shelves: ["romance", "contemporary", "boy-love"], tropes: ["secrets", "found-family"] }
     };
     novels.forEach(novel => Object.assign(novel, novelTags[novel.title]));
     const fallbackImage = "photo-1516280440614-37939bbacd81";
@@ -643,13 +1227,147 @@
     };
     const trackList = document.getElementById("trackList");
     const record = document.getElementById("record");
+    const previewPlayer = document.getElementById("previewPlayer");
+    const songPreview = document.getElementById("songPreview");
+    const previewTitle = document.getElementById("previewTitle");
+    const previewCache = new Map();
+    const novelCoverCache = new Map();
     let toastTimer;
+    let previewRequest = 0;
+
+    function updateModeText() {
+      const mode = state.mode;
+      const isLetter = mode === "letter";
+      const isNovel = mode === "novels";
+      document.getElementById("topNote").textContent = tr(isLetter ? "letterTopNote" : isNovel ? "novelTopNote" : "topNote");
+      document.getElementById("pageTitle").innerHTML = isLetter
+        ? tr("letterTitle")
+        : isNovel ? tr("novelTitle") : `${tr("pageTitleLine1")}<br>${tr("pageTitleLine2")}`;
+      document.getElementById("introEyebrow").textContent = tr(isLetter ? "letterEyebrow" : isNovel ? "novelEyebrow" : "introEyebrow");
+      document.querySelector(".intro-copy").textContent = tr(isLetter ? "letterCopy" : isNovel ? "novelCopy" : "introCopy");
+      if (isLetter) {
+        document.getElementById("letterPageDescription").textContent = tr(state.sharedLetter ? "receivedLetterDescription" : "letterDescription");
+        return;
+      }
+      document.getElementById("tastePanelTitle").textContent = tr(isNovel ? "readingTaste" : "tastePanelTitle");
+      document.getElementById("genreTitle").textContent = tr(isNovel ? "novelGenres" : "genreTitle");
+      document.getElementById("energyTitle").textContent = tr(isNovel ? "storyPace" : "energyTitle");
+      document.getElementById("energyLow").textContent = tr(isNovel ? "quietChapter" : "energyLow");
+      document.getElementById("energyHigh").textContent = tr(isNovel ? "pageTurner" : "energyHigh");
+      document.getElementById("energyValue").textContent = (isNovel
+        ? (uiLanguage === "th"
+          ? ["เรื่อย ๆ", "ละมุน", "พอดี", "ชวนติดตาม", "อ่านวางไม่ลง"]
+          : ["Meandering", "Gentle", "Steady", "Page-turner", "Can't put it down"])
+        : (uiLanguage === "th"
+          ? ["วันสบาย ๆ", "เบา ๆ", "จังหวะกลาง ๆ", "คึกคัก", "สุดเหวี่ยง"]
+          : ["Slow Sunday", "Low-key", "Mid-tempo", "Upbeat", "Full volume"]))[state.energy - 1];
+      document.getElementById("songSearch").placeholder = tr(isNovel ? "novelSearchPlaceholder" : "songSearchPlaceholder");
+      document.getElementById("songSearch").setAttribute("aria-label", tr(isNovel ? "novelSearchAria" : "songSearchAria"));
+      document.querySelector("#centerPanelTitle span").textContent = tr(isNovel ? "openCover" : "centerPanelTitle");
+      document.querySelector("#resultsPanelTitle span").textContent = tr(isNovel ? "onBookstand" : "resultsPanelTitle");
+      document.querySelector("[data-i18n='spinSong']").textContent = tr(isNovel ? "findNovel" : "spinSong");
+      if (isNovel) {
+        document.getElementById("resultHeading").textContent = tr("novelResults");
+        document.getElementById("resultSubheading").textContent = tr("novelSubheading");
+      } else {
+        document.getElementById("resultHeading").textContent = tr("resultHeading");
+        document.getElementById("resultSubheading").textContent = tr("resultSubheading");
+      }
+      updateSavedCount();
+    }
+
+    function displayNovelCategory(novel) {
+      return uiLanguage === "th" ? novel.categoryTh || novel.category : novel.category;
+    }
+    function displayNovelSynopsis(novel) {
+      return uiLanguage === "th" ? novel.synopsisTh || novel.synopsis : novel.synopsis;
+    }
+    function normalizeForMatch(value) {
+      return value.normalize("NFKD").replace(/\p{Diacritic}/gu, "").toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
+    }
+    async function findSongPreview(song) {
+      const key = `${song.title}|${song.artist}`;
+      if (previewCache.has(key)) return previewCache.get(key);
+      const market = song.countries?.includes(state.country)
+        ? state.country
+        : song.countries?.[0] || (state.country === "global" ? "us" : state.country);
+      const term = encodeURIComponent(`${song.title} ${song.artist}`);
+      const response = await fetch(`https://itunes.apple.com/search?term=${term}&entity=song&limit=10&country=${encodeURIComponent(market)}`);
+      if (!response.ok) throw new Error(`Preview search failed with status ${response.status}`);
+      const data = await response.json();
+      const title = normalizeForMatch(song.title);
+      const artist = normalizeForMatch(song.artist);
+      const matches = (Array.isArray(data.results) ? data.results : [])
+        .filter(result => {
+          const resultTitle = normalizeForMatch(result.trackName || "");
+          return result.previewUrl && (resultTitle === title || resultTitle.startsWith(`${title} `));
+        })
+        .sort((a, b) => {
+          const aTitle = normalizeForMatch(a.trackName || "");
+          const bTitle = normalizeForMatch(b.trackName || "");
+          const exactTitleMatch = Number(bTitle === title) - Number(aTitle === title);
+          if (exactTitleMatch) return exactTitleMatch;
+          const aArtist = normalizeForMatch(a.artistName || "");
+          const bArtist = normalizeForMatch(b.artistName || "");
+          return Number(bArtist.includes(artist)) - Number(aArtist.includes(artist));
+        });
+      const previewUrl = matches[0]?.previewUrl || null;
+      previewCache.set(key, previewUrl);
+      return previewUrl;
+    }
+    async function playSongPreview(song) {
+      const request = ++previewRequest;
+      const buttons = trackList.querySelectorAll(".preview-button");
+      buttons.forEach(button => { button.disabled = true; });
+      previewTitle.textContent = `${tr("previewFinding")} “${song.title}”…`;
+      previewPlayer.hidden = false;
+      songPreview.pause();
+      songPreview.removeAttribute("src");
+      songPreview.load();
+      try {
+        const previewUrl = await findSongPreview(song);
+        if (request !== previewRequest) return;
+        if (!previewUrl) {
+          previewPlayer.hidden = true;
+          showToast(`${tr("previewUnavailable")} ${song.title}`);
+          return;
+        }
+        previewTitle.textContent = `${song.title} — ${song.artist}`;
+        songPreview.src = previewUrl;
+        songPreview.load();
+        try {
+          await songPreview.play();
+        } catch (error) {
+          if (error.name === "NotAllowedError") {
+            showToast(tr("previewReady"));
+          } else {
+            console.error("Could not start song preview", error);
+            showToast("Preview could not start. Try the player controls.");
+          }
+        }
+      } catch (error) {
+        if (request !== previewRequest) return;
+        previewPlayer.hidden = true;
+        console.error("Could not load song preview", error);
+        showToast(tr("previewError"));
+      } finally {
+        if (request === previewRequest) buttons.forEach(button => { button.disabled = false; });
+      }
+    }
+    function stopSongPreview() {
+      previewRequest++;
+      songPreview.pause();
+      songPreview.removeAttribute("src");
+      songPreview.load();
+      previewPlayer.hidden = true;
+    }
 
     function imageUrl(id) {
       return `https://images.unsplash.com/${id}?auto=format&fit=crop&w=140&h=140&q=80`;
     }
     function score(song) {
-      const countryScore = countryProfiles[state.country]?.songGenres.includes(song.genre) ? 2 : 0;
+      const countryScore = (countryProfiles[state.country]?.songGenres.includes(song.genre) ? 2 : 0)
+        + (song.countries?.includes(state.country) ? 5 : 0);
       return (state.genres.has(song.genre) ? 5 : 0) + (song.moods.includes(state.mood) ? 3 : 0) + countryScore - Math.abs(song.energy - state.energy);
     }
     function chooseSongs() {
@@ -686,11 +1404,87 @@
           + novel.shelves.filter(genre => regionalShelves.includes(genre)).length * 2
           + novel.shelves.filter(genre => state.bookGenres.has(genre)).length * 8
           + novel.tropes.filter(trope => state.bookTropes.has(trope)).length * 6
+          + (state.country === "th" && novel.countries?.includes("th") ? 12 : 0)
+          + (state.country === "th" && novel.title.startsWith("พี่ว้ากตัวร้าย") ? 8 : 0)
           - Math.abs(novel.energy - state.energy)
       })).sort((a, b) => b.score - a.score || a.novel.title.localeCompare(b.novel.title))
         .slice(0, 3).map(item => item.novel);
     }
+    async function findNovelCover(novel) {
+      const key = `${novel.title}|${novel.author}`;
+      if (novelCoverCache.has(key)) return novelCoverCache.get(key);
+      try {
+        const query = encodeURIComponent(`intitle:${novel.title} inauthor:${novel.author}`);
+        const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}&maxResults=5`);
+        if (response.ok) {
+          const data = await response.json();
+          const title = normalizeForMatch(novel.title);
+          const match = (data.items || []).find(item =>
+            normalizeForMatch(item.volumeInfo?.title || "").includes(title)
+          ) || data.items?.[0];
+          const thumbnail = match?.volumeInfo?.imageLinks?.thumbnail
+            || match?.volumeInfo?.imageLinks?.smallThumbnail
+            || null;
+          if (thumbnail) {
+            const coverUrl = thumbnail.replace(/^http:/, "https:");
+            novelCoverCache.set(key, coverUrl);
+            return coverUrl;
+          }
+        }
+      } catch (error) {
+        // Try the Open Library fallback below.
+      }
+      try {
+        const query = encodeURIComponent(`${novel.title} ${novel.author}`);
+        const response = await fetch(`https://openlibrary.org/search.json?q=${query}&limit=5`);
+        if (response.ok) {
+          const data = await response.json();
+          const title = normalizeForMatch(novel.title);
+          const match = (data.docs || []).find(item =>
+            normalizeForMatch(item.title || "").includes(title)
+          ) || data.docs?.[0];
+          if (match?.cover_i) {
+            const coverUrl = `https://covers.openlibrary.org/b/id/${match.cover_i}-M.jpg`;
+            novelCoverCache.set(key, coverUrl);
+            return coverUrl;
+          }
+        }
+      } catch (error) {
+        // Keep the colored initial fallback.
+      }
+      novelCoverCache.set(key, null);
+      return null;
+    }
+    function createNovelCover(novel, className = "book-cover") {
+      const cover = document.createElement("div");
+      cover.className = className;
+      cover.style.backgroundColor = novel.color;
+      cover.textContent = novel.title.charAt(0);
+      cover.setAttribute("aria-label", `${novel.title} cover`);
+      const cached = novelCoverCache.get(`${novel.title}|${novel.author}`);
+      if (cached) {
+        cover.style.backgroundImage = `url("${cached}")`;
+        cover.textContent = "";
+      } else {
+        findNovelCover(novel).then(url => {
+          if (!url || !cover.isConnected) return;
+          cover.style.backgroundImage = `url("${url}")`;
+          cover.textContent = "";
+        });
+      }
+      return cover;
+    }
+    function updateFeaturedBookCover(novel) {
+      if (!novel) return;
+      const label = document.querySelector(".record-label");
+      findNovelCover(novel).then(url => {
+        if (!url) return;
+        label.style.backgroundImage = `url("${url}")`;
+        label.classList.add("has-cover");
+      });
+    }
     function renderBooks(list) {
+      stopSongPreview();
       trackList.replaceChildren();
       if (!list.length) {
         const note = document.createElement("p");
@@ -703,10 +1497,7 @@
         const isSaved = state.savedBooks.has(novel.title);
         const item = document.createElement("article");
         item.className = "track book-result";
-        const cover = document.createElement("div");
-        cover.className = "book-cover";
-        cover.style.background = novel.color;
-        cover.textContent = novel.title.charAt(0);
+        const cover = createNovelCover(novel);
         const info = document.createElement("div");
         info.className = "track-info";
         const title = document.createElement("p");
@@ -717,8 +1508,17 @@
         author.textContent = novel.author;
         const meta = document.createElement("div");
         meta.className = "track-meta";
-        meta.textContent = novel.category;
-        info.append(title, author, meta);
+        meta.textContent = displayNovelCategory(novel);
+        const synopsis = document.createElement("p");
+        synopsis.className = "novel-synopsis";
+        synopsis.textContent = displayNovelSynopsis(novel);
+        const song = document.createElement("a");
+        song.className = "novel-song";
+        song.target = "_blank";
+        song.rel = "noreferrer";
+        song.href = `https://open.spotify.com/search/${encodeURIComponent(`${novel.songTitle} ${novel.songArtist}`)}`;
+        song.textContent = `♫ ${novel.songTitle} — ${novel.songArtist}`;
+        info.append(title, author, meta, synopsis, song);
         const save = document.createElement("button");
         save.className = `save-button${isSaved ? " saved" : ""}`;
         save.type = "button";
@@ -741,18 +1541,26 @@
     function renderTracks(list) {
       trackList.replaceChildren();
       if (!list.length) {
-        trackList.innerHTML = '<p style="font-size:12px;color:var(--muted);line-height:1.6">No saved records yet. Tap the heart on a track to keep it close.</p>';
+        const note = document.createElement("p");
+        note.className = "empty-note";
+        note.textContent = tr("noSavedTracks");
+        trackList.append(note);
         return;
       }
       list.forEach(song => {
         const isSaved = state.saved.has(song.title);
         const item = document.createElement("article");
         item.className = "track";
-        item.innerHTML = `<img class="cover" src="${imageUrl(song.image || fallbackImage)}" alt="Abstract album artwork for ${song.title}" loading="lazy"><div class="track-info"><p class="track-title"></p><p class="track-artist"></p><div class="track-meta">${song.note}</div></div><button class="small-button add-track-button" type="button" aria-label="Add ${song.title} to playlist">+</button><button class="save-button${isSaved ? " saved" : ""}" type="button" aria-label="${isSaved ? "Remove" : "Save"} ${song.title}" aria-pressed="${isSaved}">${isSaved ? "♥" : "♡"}</button>`;
+        item.innerHTML = `<img class="cover" src="${imageUrl(song.image || fallbackImage)}" alt="Abstract album artwork for ${song.title}" loading="lazy"><div class="track-info"><button class="track-title" type="button"></button><p class="track-artist"></p><div class="track-meta"></div><button class="preview-button" type="button"></button></div><button class="small-button add-track-button" type="button" aria-label="Add ${song.title} to playlist">+</button><button class="save-button${isSaved ? " saved" : ""}" type="button" aria-label="${isSaved ? "Remove" : "Save"} ${song.title}" aria-pressed="${isSaved}">${isSaved ? "♥" : "♡"}</button>`;
         item.querySelector(".track-title").textContent = song.title;
-        item.querySelector(".track-artist").textContent = song.artist;
+        item.querySelector(".track-title").setAttribute("aria-label", `${tr("playHookAria")} ${song.title}`);
+        item.querySelector(".preview-button").textContent = tr("playHook");
+        item.querySelector(".track-artist").textContent = song.language ? `${song.artist} · ${song.language}` : song.artist;
+        item.querySelector(".track-meta").textContent = song.note;
+        item.querySelector(".track-title").addEventListener("click", () => playSongPreview(song));
+        item.querySelector(".preview-button").addEventListener("click", () => playSongPreview(song));
         item.querySelector(".save-button").addEventListener("click", () => toggleSaved(song));
-          item.querySelector(".add-track-button").addEventListener("click", () => addToPlaylist(song));
+        item.querySelector(".add-track-button").addEventListener("click", () => addToPlaylist(song));
         trackList.append(item);
       });
     }
@@ -804,10 +1612,14 @@
           row.className = "search-result";
           const info = document.createElement("div");
           info.className = "search-result-info";
-          const title = document.createElement("strong");
+          const title = document.createElement("button");
+          title.className = "track-title";
+          title.type = "button";
           title.textContent = song.title;
+          title.setAttribute("aria-label", `${tr("playHookAria")} ${song.title}`);
+          title.addEventListener("click", () => playSongPreview(song));
           const artist = document.createElement("span");
-          artist.textContent = `${song.artist} · ${song.genre}`;
+          artist.textContent = `${song.artist} · ${song.language ? `${song.language} · ` : ""}${song.genre}`;
           info.append(title, artist);
           const add = document.createElement("button");
           add.className = "small-button";
@@ -894,16 +1706,16 @@
         if (!term) {
           const note = document.createElement("p");
           note.className = "empty-note";
-          note.textContent = "Search the Side A song shelf to find a track.";
+          note.textContent = tr("searchEmpty");
           results.append(note);
           return;
         }
         if (state.mode === "novels") {
-          const matches = novels.filter(novel => `${novel.title} ${novel.author} ${novel.category} ${novel.songGenres.join(" ")}`.toLowerCase().includes(term));
+          const matches = novels.filter(novel => `${novel.title} ${novel.author} ${novel.category} ${novel.categoryTh || ""} ${novel.searchTerms || ""} ${novel.synopsis} ${novel.synopsisTh || ""} ${novel.songTitle} ${novel.songArtist} ${novel.songGenres.join(" ")}`.toLowerCase().includes(term));
           if (!matches.length) {
             const note = document.createElement("p");
             note.className = "empty-note";
-            note.textContent = "No novels found. Try a title, author, theme, or music genre.";
+            note.textContent = tr("noNovelResults");
             results.append(note);
             return;
           }
@@ -915,8 +1727,17 @@
             const title = document.createElement("strong");
             title.textContent = novel.title;
             const author = document.createElement("span");
-            author.textContent = `${novel.author} · ${novel.category}`;
-            info.append(title, author);
+            author.textContent = `${novel.author} · ${displayNovelCategory(novel)}`;
+            const synopsis = document.createElement("span");
+            synopsis.className = "novel-synopsis";
+            synopsis.textContent = displayNovelSynopsis(novel);
+            const song = document.createElement("a");
+            song.className = "novel-song";
+            song.target = "_blank";
+            song.rel = "noreferrer";
+            song.href = `https://open.spotify.com/search/${encodeURIComponent(`${novel.songTitle} ${novel.songArtist}`)}`;
+            song.textContent = `♫ ${novel.songTitle} — ${novel.songArtist}`;
+            info.append(title, author, synopsis, song);
             const save = document.createElement("button");
             save.className = "small-button";
             save.type = "button";
@@ -928,11 +1749,11 @@
           });
           return;
         }
-        const matches = songs.filter(song => `${song.title} ${song.artist} ${song.genre} ${song.note}`.toLowerCase().includes(term));
+        const matches = songs.filter(song => `${song.title} ${song.artist} ${song.genre} ${song.language || ""} ${song.note}`.toLowerCase().includes(term));
         if (!matches.length) {
           const note = document.createElement("p");
           note.className = "empty-note";
-          note.textContent = "No records found. Try another title, artist, or genre.";
+          note.textContent = tr("noSongResults");
           results.append(note);
           return;
         }
@@ -941,10 +1762,14 @@
           row.className = "search-result";
           const info = document.createElement("div");
           info.className = "search-result-info";
-          const title = document.createElement("strong");
+          const title = document.createElement("button");
+          title.className = "track-title";
+          title.type = "button";
           title.textContent = song.title;
+          title.setAttribute("aria-label", `${tr("playHookAria")} ${song.title}`);
+          title.addEventListener("click", () => playSongPreview(song));
           const artist = document.createElement("span");
-          artist.textContent = `${song.artist} · ${song.genre}`;
+          artist.textContent = `${song.artist} · ${song.language ? `${song.language} · ` : ""}${song.genre}`;
           info.append(title, artist);
           const add = document.createElement("button");
           add.className = "small-button";
@@ -980,13 +1805,13 @@
       function letterCatalog() {
         return state.letterDraft.type === "songs"
           ? songs.map(song => ({ type: "songs", title: song.title, creator: song.artist, detail: song.genre }))
-          : novels.map(novel => ({ type: "novels", title: novel.title, creator: novel.author, detail: novel.category }));
+          : novels.map(novel => ({ type: "novels", title: novel.title, creator: novel.author, detail: displayNovelCategory(novel), searchTerms: `${novel.searchTerms || ""} ${novel.category} ${novel.categoryTh || ""}` }));
       }
       function renderLetterCatalog() {
         const container = document.getElementById("letterCatalog");
         container.replaceChildren();
         const term = document.getElementById("letterItemSearch").value.trim().toLowerCase();
-        const matches = letterCatalog().filter(item => `${item.title} ${item.creator} ${item.detail}`.toLowerCase().includes(term)).slice(0, 8);
+        const matches = letterCatalog().filter(item => `${item.title} ${item.creator} ${item.detail} ${item.searchTerms || ""}`.toLowerCase().includes(term)).slice(0, 8);
         if (!matches.length) {
           const note = document.createElement("p");
           note.className = "empty-note";
@@ -1002,6 +1827,11 @@
           button.type = "button";
           button.setAttribute("aria-pressed", String(selected));
           const copy = document.createElement("span");
+          copy.className = "letter-item-copy";
+          if (item.type === "novels") {
+            const novel = novels.find(entry => entry.title === item.title);
+            if (novel) button.append(createNovelCover(novel));
+          }
           const title = document.createElement("strong");
           title.textContent = item.title;
           const creator = document.createElement("span");
@@ -1035,6 +1865,7 @@
           const novel = item.type === "novels" ? novels.find(entry => entry.title === item.title) : null;
           const creator = song?.artist || novel?.author || item.creator || "";
           const row = document.createElement("li");
+          if (novel) row.append(createNovelCover(novel));
           const link = document.createElement("a");
           link.target = "_blank";
           link.rel = "noreferrer";
@@ -1143,14 +1974,19 @@
       }
       function applyLabel() {
         document.querySelector(".record-label span:first-child").textContent = state.labelText || "SIDE A";
-        document.querySelector(".record-label span:nth-of-type(2)").textContent = state.mode === "novels" ? "A YA EDITION" : "33⅓ RPM";
-        document.querySelector(".record-label").style.background = state.labelColor;
+        document.querySelector(".record-label span:nth-of-type(2)").textContent = state.mode === "novels" ? "BOOK EDITION" : "33⅓ RPM";
+        const label = document.querySelector(".record-label");
+        if (state.mode !== "novels") {
+          label.classList.remove("has-cover");
+          label.style.backgroundImage = "";
+          label.style.background = state.labelColor;
+        }
         const decoration = document.getElementById("labelDecoration");
         decoration.textContent = state.labelDecoration;
         decoration.hidden = !state.labelDecoration;
       }
     function updateSavedCount() {
-      document.getElementById("savedLink").firstChild.textContent = state.mode === "novels" ? "Reading list " : "Saved tracks ";
+      document.querySelector("#savedLink [data-i18n='savedTracks']").textContent = tr(state.mode === "novels" ? "readingList" : "savedTracks");
       document.getElementById("savedCount").textContent = state.mode === "novels" ? state.savedBooks.size : state.saved.size;
     }
     function toggleSaved(song) {
@@ -1169,19 +2005,20 @@
       clearTimeout(toastTimer);
       toastTimer = setTimeout(() => toast.classList.remove("show"), 1800);
     }
-    function spin() {
+    function spin(playPreview = false) {
       state.showingSaved = false;
       if (state.mode === "novels") {
         state.currentBooks = chooseNovels();
         renderBooks(state.currentBooks);
-        document.getElementById("resultHeading").textContent = "A shelf shaped by your taste";
-        document.getElementById("resultSubheading").textContent = "YA novels matched to your mood and music";
+        document.getElementById("resultHeading").textContent = tr("novelResults");
+        document.getElementById("resultSubheading").textContent = tr("novelSubheading");
         document.querySelector(".mix-count").textContent = `READ / ${String(state.currentBooks.length).padStart(2, "0")}`;
-        document.getElementById("recordCaption").textContent = "Your next read is ready";
-        document.getElementById("spinButton").firstChild.textContent = "Find a novel ";
-        document.getElementById("listenLink").firstChild.textContent = "Find these books online ";
+        document.getElementById("recordCaption").textContent = tr("novelReady");
+        document.querySelector("[data-i18n='spinSong']").textContent = tr("findNovel");
+        document.getElementById("listenLink").firstChild.textContent = `${tr("findBooks")} `;
         const query = encodeURIComponent(state.currentBooks.map(novel => `${novel.title} ${novel.author}`).join(" "));
         document.getElementById("listenLink").href = `https://www.google.com/search?tbm=bks&q=${query}`;
+        updateFeaturedBookCover(state.currentBooks[0]);
         record.classList.remove("spinning");
         void record.offsetWidth;
         record.classList.add("spinning");
@@ -1190,12 +2027,13 @@
       }
       state.current = chooseSongs();
       renderTracks(state.current);
-      document.getElementById("resultHeading").textContent = "A little listening mix";
-      document.getElementById("resultSubheading").textContent = "Three tracks picked for your kind of day";
+      if (playPreview && state.current[0]) playSongPreview(state.current[0]);
+      document.getElementById("resultHeading").textContent = tr("resultHeading");
+      document.getElementById("resultSubheading").textContent = tr("resultSubheading");
       document.querySelector(".mix-count").textContent = "SIDE A / 03";
-      document.getElementById("recordCaption").textContent = "Your mix is ready to find";
-      document.getElementById("spinButton").firstChild.textContent = "Spin for a song ";
-      document.getElementById("listenLink").firstChild.textContent = "Find this mix on Spotify ";
+      document.getElementById("recordCaption").textContent = tr("mixReady");
+      document.querySelector("[data-i18n='spinSong']").textContent = tr("spinSong");
+      document.getElementById("listenLink").firstChild.textContent = `${tr("findMix")} `;
       const query = encodeURIComponent(state.current.map(song => `${song.title} ${song.artist}`).join(" "));
       document.getElementById("listenLink").href = `https://open.spotify.com/search/${query}`;
       record.classList.remove("spinning");
@@ -1228,6 +2066,7 @@
           document.getElementById("letterReadOnly").hidden = true;
           updateLetterPreview();
         }
+        updateModeText();
         return;
       }
       document.getElementById("letterEditor").hidden = false;
@@ -1235,11 +2074,11 @@
       document.getElementById("letterPageDescription").textContent = "Write a note, tuck in a song or book, and make a link just for them.";
       document.getElementById("topNote").textContent = mode === "novels" ? "A quiet corner for your next read" : "A little more feeling in your listening";
       document.getElementById("pageTitle").innerHTML = mode === "novels" ? "Find your next<br>read." : "Find your next<br>favorite.";
-      document.getElementById("introEyebrow").textContent = mode === "novels" ? "The YA reading room" : "Your personal listening booth";
+      document.getElementById("introEyebrow").textContent = mode === "novels" ? "The reading room" : "Your personal listening booth";
       document.querySelector(".intro-copy").textContent = mode === "novels"
-        ? "Your mood and music favorites can point to your next young-adult read."
+        ? "Your mood and music favorites can point to your next great read."
         : "Set the mood. Pick a sound. We’ll find the song that feels like it was waiting for you.";
-      document.getElementById("discoveryStudio").setAttribute("aria-label", mode === "novels" ? "Young adult novel discovery" : "Song discovery studio");
+      document.getElementById("discoveryStudio").setAttribute("aria-label", mode === "novels" ? "Novel discovery" : "Song discovery studio");
       document.getElementById("tastePanelTitle").textContent = mode === "novels" ? "Your reading taste" : "Your taste";
       document.getElementById("songSearch").placeholder = mode === "novels" ? "Novel, author, or theme" : "Song, artist, or genre";
       document.getElementById("songSearch").setAttribute("aria-label", mode === "novels" ? "Search novels, authors, or themes" : "Search songs, artists, or genres");
@@ -1261,6 +2100,7 @@
       applyLabel();
       spin();
       renderSearchResults(document.getElementById("songSearch").value);
+      updateModeText();
     }
     document.querySelectorAll(".mood").forEach(button => button.addEventListener("click", () => {
       document.querySelectorAll(".mood").forEach(item => item.setAttribute("aria-pressed", String(item === button)));
@@ -1288,13 +2128,13 @@
       localStorage.setItem("side-a-country", state.country);
       spin();
     });
-    document.getElementById("spinButton").addEventListener("click", spin);
+    document.getElementById("spinButton").addEventListener("click", () => spin(true));
     document.getElementById("savedLink").addEventListener("click", () => {
       state.showingSaved = !state.showingSaved;
       if (state.mode === "novels") {
         if (state.showingSaved) {
           document.getElementById("resultHeading").textContent = "Your reading list";
-          document.getElementById("resultSubheading").textContent = "YA novels you saved for later";
+          document.getElementById("resultSubheading").textContent = tr("savedNovelsDescription");
           document.querySelector(".mix-count").textContent = `SAVED / ${String(state.savedBooks.size).padStart(2, "0")}`;
           renderBooks(novels.filter(novel => state.savedBooks.has(novel.title)));
         } else spin();
@@ -1442,7 +2282,7 @@
       document.querySelectorAll(".chip").forEach(button => button.setAttribute("aria-pressed", String(button.dataset.genre === genre)));
       document.getElementById("energy").value = state.energy;
       document.getElementById("energyValue").textContent = ["Slow Sunday", "Low-key", "Mid-tempo", "Upbeat", "Full volume"][state.energy - 1];
-      spin();
+      spin(true);
       showToast(`A ${mood} ${genre} mix, coming up`);
     });
     document.getElementById("blindPick").addEventListener("click", () => {
@@ -1462,6 +2302,7 @@
         const song = songs[Math.floor(Math.random() * songs.length)];
         state.current = [song];
         renderTracks(state.current);
+        playSongPreview(song);
         document.getElementById("resultSubheading").textContent = "One track chosen just for the plot";
         document.querySelector(".mix-count").textContent = "SIDE A / 01";
         document.getElementById("recordCaption").textContent = "No skips until the first chorus";
@@ -1487,6 +2328,7 @@
     renderPlaylists();
     state.current = chooseSongs();
     renderTracks(state.current);
+    updateModeText();
     if (state.sharedLetter) setMode("letter");
   </script>
 </body>
